@@ -1,0 +1,89 @@
+/* Synthetic Control with Control Buttons */
+@mixin jt-control {
+    .jt-control {
+        position: relative;
+        display: flex;
+        align-items: center;
+        border: 1px solid var(--_jt-control-border);
+        border-radius: var(--_jt-control-border-radius);
+
+        input {
+            flex: 1 0 auto;
+            border: none;
+            outline: none;
+            font-size: inherit;
+            background-color: transparent;
+            border-start-start-radius: var(--_jt-control-border-radius);
+            border-end-start-radius: var(--_jt-control-border-radius);
+        }
+
+        &__buttons {
+            position: absolute;
+            inset-block: 0;
+            inset-inline-end: 0;
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 0.2em;
+            padding-inline-end: 0.2em;
+        }
+
+        &:hover {
+            border: 1px solid var(--_jt-control-border-hover);
+        }
+
+        &.jt-focus {
+            border-color: transparent;
+            outline: 2px solid var(--_jt-control-border-focus);
+            outline-offset: -1px;
+        }
+    }
+}
+
+/* Arrow Button that points down or up if aria-expanded is true */
+@mixin arrow-button {
+    font-size: inherit;
+    width: var(--_jt-control-arrow-size);
+    height: var(--_jt-control-arrow-size);
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: var(--_jt-control-color);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' stroke='currentColor' class='w-5 h-5'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd' /%3E%3C/svg%3E");
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' stroke='currentColor' class='w-5 h-5'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd' /%3E%3C/svg%3E");
+
+    &[aria-expanded="true"] {
+        transform: rotate(180deg);
+    }
+}
+
+/* Back (Left-Arrow) Button */
+@mixin back-button {
+    font-size: inherit;
+    width: var(--_jt-control-arrow-size);
+    height: var(--_jt-control-arrow-size);
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: var(--_jt-control-color);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' stroke='currentColor' class='w-5 h-5'%3E%3Cpath fill-rule='evenodd' d='M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z' clip-rule='evenodd' /%3E%3C/svg%3E");
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' stroke='currentColor' class='w-5 h-5'%3E%3Cpath fill-rule='evenodd' d='M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z' clip-rule='evenodd' /%3E%3C/svg%3E");
+
+    &:dir(rtl) {
+        transform: rotate(180deg);
+    }
+}
+
+/* Clear Button */
+@mixin clear-button {
+    font-size: inherit;
+    width: 1em;
+    height: 1em;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: var(--_jt-control-color);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' stroke='currentColor' viewBox='0 0 20 20' class='w-5 h-5'%3E%3Cpath d='M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z' /%3E%3C/svg%3E");
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' stroke='currentColor' viewBox='0 0 20 20' class='w-5 h-5'%3E%3Cpath d='M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z' /%3E%3C/svg%3E");
+}

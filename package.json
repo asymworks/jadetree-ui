@@ -1,0 +1,76 @@
+{
+  "name": "@jadetree/ui",
+  "version": "0.1.0",
+  "description": "Jade Tree UI Components",
+  "module": "./lib/index.js",
+  "scripts": {
+    "build-storybook": "build-storybook",
+    "clean": "rm -rf lib",
+    "lint": "eslint ./src --ext .ts",
+    "storybook": "start-storybook -p 6006",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asymworks/jadetree-ui.git"
+  },
+  "author": {
+    "name": "Jonathan Krauss",
+    "email": "jkrauss@asymworks.com"
+  },
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/asymworks/jadetree-ui/issues"
+  },
+  "homepage": "https://github.com/asymworks/jadetree-ui#readme",
+  "devDependencies": {
+    "@babel/core": "^7.20.5",
+    "@csstools/postcss-sass": "^5.0.1",
+    "@jest/globals": "^29.3.1",
+    "@rollup/plugin-commonjs": "^24.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-terser": "^0.2.1",
+    "@rollup/plugin-typescript": "^10.0.1",
+    "@storybook/addon-a11y": "^6.5.15",
+    "@storybook/addon-actions": "^6.5.14",
+    "@storybook/addon-essentials": "^6.5.14",
+    "@storybook/addon-interactions": "^6.5.14",
+    "@storybook/addon-links": "^6.5.14",
+    "@storybook/addon-postcss": "^2.0.0",
+    "@storybook/builder-webpack4": "^6.5.14",
+    "@storybook/builder-webpack5": "^6.5.14",
+    "@storybook/html": "^6.5.14",
+    "@storybook/manager-webpack5": "^6.5.14",
+    "@storybook/testing-library": "^0.0.13",
+    "@testing-library/dom": "^8.19.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/jsdom": "^20.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.46.1",
+    "@typescript-eslint/parser": "^5.46.1",
+    "autoprefixer": "^10.4.13",
+    "babel-loader": "^8.3.0",
+    "css-loader": "^6.7.3",
+    "eslint": "^8.30.0",
+    "jest": "^29.3.1",
+    "jest-environment-jsdom": "^29.3.1",
+    "jsdom": "^20.0.3",
+    "node-sass": "^8.0.0",
+    "postcss": "^8.4.20",
+    "postcss-loader": "^7.0.2",
+    "postcss-scss": "^4.0.6",
+    "rollup": "^3.7.5",
+    "rollup-plugin-postcss": "^4.0.2",
+    "sass": "^1.57.0",
+    "storybook-addon-mock": "^3.2.0",
+    "storybook-mobile": "^1.0.0",
+    "ts-jest": "^29.0.3",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.4.1",
+    "typescript": "^4.9.4",
+    "webpack": "^5.75.0"
+  },
+  "dependencies": {
+    "qinu": "^2.0.0"
+  }
+}

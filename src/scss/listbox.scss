@@ -1,0 +1,56 @@
+@use 'base.scss';
+@use 'mixins.scss';
+
+.jt-listbox {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    overflow-block: auto;
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
+}
+
+.jt-listbox__item {
+    position: relative;
+    display: block;
+    padding: 0.2em;
+    cursor: default;
+
+    &[aria-hidden="true"],
+    &[hidden] {
+        display: none;
+    }
+
+    &[aria-disabled="true"] {
+        color: var(--_jt-control-disabled-color);
+    }
+
+    &[role="separator"] {
+        height: 0;
+        padding: 0;
+        margin-block: var(--_jt-listbox-separator-margin);
+        border-block-end: 1px solid var(--_jt-control-disabled-color);
+        overflow-y: hidden;
+    }
+
+    &.jt-hover {
+        background-color: var(--_jt-control-hover-background);
+        color: var(--_jt-control-hover-color);
+    }
+
+    &.jt-focused {
+        outline: var(--_jt-control-disabled-color) var(--_jt-focus-ring-style) var(--_jt-focus-ring-width);
+        outline-offset: var(--_jt-focus-ring-offset);
+    }
+
+    .jt-focus &.jt-focused {
+        outline: var(--_jt-focus-ring-color) var(--_jt-focus-ring-style) var(--_jt-focus-ring-width);
+        outline-offset: var(--_jt-focus-ring-offset);
+        background-color: var(--_jt-focus-background);
+        color: var(--_jt-focus-color);
+    }
+}

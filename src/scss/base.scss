@@ -1,0 +1,20 @@
+/* Base CSS Styles for Jade Tree Components */
+
+:root {
+    --jt-accent-color: #08e;
+
+    --jt-control-arrow-size: 1.2em;
+
+    --jt-control-color: #000;
+    --jt-control-background: #fff;
+
+    --jt-control-border: #999;
+    --jt-control-border-radius: 3px;
+    --jt-control-border-hover: #555;
+    --jt-control-border-focus: #08f;
+
+    --jt-control-disabled-color: #aaa;
+
+    --jt-control-hover-background: var(--jt-accent-color, #08e);
+    --jt-control-hover-color: #fff;
+}

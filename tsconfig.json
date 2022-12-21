@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "es2017",
+    "declaration": true,
+    "outDir": "./lib",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "types": [ "node", "jest", "@testing-library/jest-dom" ],
+  },
+  "exclude": [
+    "node_modules",
+    "./src/stories/**/*"
+  ],
+  "include": [
+    "./src/**/*",
+  ]
+}
