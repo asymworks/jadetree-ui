@@ -12,6 +12,7 @@ const configs = {
   name: 'JtControls',
   files: [
     'autocomplete.ts',
+    'index.ts',
   ],
   formats: ['es', 'iife'],
   default: 'es',
