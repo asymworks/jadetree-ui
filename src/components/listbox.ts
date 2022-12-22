@@ -46,7 +46,7 @@ export type JtRenderItemData = JtListItemData & {
     groupLabel?: string;
     searchRegex?: RegExp;
     searchString?: string;
-    type: string;
+    type?: string;
 };
 
 /** Item or Group Rendering Template */
@@ -540,7 +540,6 @@ export default class JtListBox {
             item.empty = true;
             template = this._itemTemplate || defaultItemTemplate;
         } else if (role === 'presentation') {
-            console.log(item)
             template = this._headerTemplate || defaultHeaderTemplate;
         }
 
@@ -701,9 +700,7 @@ export default class JtListBox {
         op: 'add' | 'remove',
         ...tokens: string[]): void
     {
-        console.log(item, op, tokens);
         if (item === 'list') {
-            console.log(this._root.classList[op]);
             this._root.classList[op](...tokens);
         } else if (item === 'group') {
             this._root.querySelectorAll('[role="group"]')

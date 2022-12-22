@@ -103,7 +103,7 @@ Default.args = {
     value: '',
 };
 
-export const API = (args) => {
+export const API: Story<AutocompleteProps> = (args) => {
     return `
 <jt-autocomplete${ args.clearable ? ' clearable' : ''} src="https://mock-api.jadetree.io/groceries">
     ${InputElement(args)}
@@ -111,6 +111,25 @@ export const API = (args) => {
 `;
 }
 API.args = {
+    clearable: false,
+    disabled: false,
+    placeholder: '',
+    readonly: false,
+    type: 'text',
+    value: '',
+};
+
+export const UserTemplate: Story<AutocompleteProps> = (args) => {
+    return `
+<jt-autocomplete${ args.clearable ? ' clearable' : ''} headerTemplate="header-tmpl" itemTemplate="item-tmpl">
+    ${InputElement(args)}
+    ${DataList}
+</jt-autocomplete>
+<template id="header-tmpl"><span style="font-weight:bold">Group: </span>\${ item.label }</template>
+<template id="item-tmpl"><span style="font-weight:bold">Item: </span>\${ item.label }</template>
+`;
+}
+UserTemplate.args = {
     clearable: false,
     disabled: false,
     placeholder: '',

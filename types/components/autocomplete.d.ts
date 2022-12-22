@@ -6,14 +6,14 @@ export default class JtAutocomplete extends HTMLElement {
     _btnOpen: HTMLButtonElement;
     _btnClear?: HTMLButtonElement;
     _btnClose: HTMLButtonElement;
-    _headerTemplate: string | JtListItemTemplate | null;
+    _headerTemplate: JtListItemTemplate | null;
     _listbox?: JtListBox;
     _listboxFocused: boolean;
     _listboxLoaded: boolean;
     _listboxSource: string;
     _input: HTMLInputElement;
     _id: string;
-    _itemTemplate: string | JtListItemTemplate | null;
+    _itemTemplate: JtListItemTemplate | null;
     _mode: string;
     _observer: MutationObserver;
     _templateChanging: boolean;

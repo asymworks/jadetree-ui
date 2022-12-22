@@ -18,14 +18,14 @@ export default class JtAutocomplete extends HTMLElement {
     _btnOpen: HTMLButtonElement;
     _btnClear?: HTMLButtonElement;
     _btnClose: HTMLButtonElement;
-    _headerTemplate: string | JtListItemTemplate | null;
+    _headerTemplate: JtListItemTemplate | null;
     _listbox?: JtListBox;
     _listboxFocused: boolean;
     _listboxLoaded: boolean;
     _listboxSource: string;
     _input: HTMLInputElement;
     _id: string;
-    _itemTemplate: string | JtListItemTemplate | null;
+    _itemTemplate: JtListItemTemplate | null;
     _mode: string;
     _observer: MutationObserver;
     _templateChanging: boolean;
@@ -233,7 +233,15 @@ export default class JtAutocomplete extends HTMLElement {
 
     /** @private */
     _listBoxOptions(): JtListBoxOptions {
-        return {};
+        return {
+            groupListClasses: this.groupClass ? [...this.groupClass.split(' ')] : [],
+            groupHeaderClasses: this.headerClass ? [...this.headerClass.split(' ')] : [],
+            itemClasses: this.itemClass ? [...this.itemClass.split(' ')] : [],
+            listClasses: this.listClass ? [...this.listClass.split(' ')] : [],
+            groupHeaderTemplate: this._headerTemplate,
+            itemTemplate: this._itemTemplate,
+            type: 'single',
+        };
     }
 
     /** @private */
@@ -582,7 +590,6 @@ export default class JtAutocomplete extends HTMLElement {
     }
 
     attributeChangedCallback(name: string, oldValue: string|null, newValue: string|null) {
-        console.log(name, oldValue, newValue);
         switch (name) {
             case 'groupclass':
                 this._listbox.groupClassList.value = newValue;
@@ -601,14 +608,20 @@ export default class JtAutocomplete extends HTMLElement {
                 break;
 
             case 'headertemplate':
-                if (newValue !== 'function') {
+                if (newValue === null) {
+                    this._headerTemplate = null;
+                    this._listbox.headerTemplate = null;
+                } else if (newValue !== 'function') {
                     this._headerTemplate = this._loadTemplate(newValue);
                     this._listbox.headerTemplate = this._headerTemplate;
                 }
                 break;
 
             case 'itemtemplate':
-                if (newValue !== 'function') {
+                if (newValue === null) {
+                    this._itemTemplate = null;
+                    this._listbox.itemTemplate = null;
+                } else if (newValue !== 'function') {
                     this._itemTemplate = this._loadTemplate(newValue);
                     this._listbox.itemTemplate = this._itemTemplate;
                 }

@@ -31,7 +31,7 @@ export type JtRenderItemData = JtListItemData & {
     groupLabel?: string;
     searchRegex?: RegExp;
     searchString?: string;
-    type: string;
+    type?: string;
 };
 /** Item or Group Rendering Template */
 export type JtListItemTemplate = (item: JtRenderItemData) => string;

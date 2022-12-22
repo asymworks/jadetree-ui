@@ -1,4 +1,4 @@
-/*! JtControls v0.1.0 | (c) 2022 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.1.2 | (c) 2022 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 var JtControls = (function () {
 	'use strict';
 
@@ -597,7 +597,6 @@ var JtControls = (function () {
 	            template = this._itemTemplate || defaultItemTemplate;
 	        }
 	        else if (role === 'presentation') {
-	            console.log(item);
 	            template = this._headerTemplate || defaultHeaderTemplate;
 	        }
 	        if (template) {
@@ -746,9 +745,7 @@ var JtControls = (function () {
 	    }
 	    /** @private */
 	    _userClassChanged(item, op, ...tokens) {
-	        console.log(item, op, tokens);
 	        if (item === 'list') {
-	            console.log(this._root.classList[op]);
 	            this._root.classList[op](...tokens);
 	        }
 	        else if (item === 'group') {
@@ -1401,7 +1398,15 @@ var JtControls = (function () {
 	    }
 	    /** @private */
 	    _listBoxOptions() {
-	        return {};
+	        return {
+	            groupListClasses: this.groupClass ? [...this.groupClass.split(' ')] : [],
+	            groupHeaderClasses: this.headerClass ? [...this.headerClass.split(' ')] : [],
+	            itemClasses: this.itemClass ? [...this.itemClass.split(' ')] : [],
+	            listClasses: this.listClass ? [...this.listClass.split(' ')] : [],
+	            groupHeaderTemplate: this._headerTemplate,
+	            itemTemplate: this._itemTemplate,
+	            type: 'single',
+	        };
 	    }
 	    /** @private */
 	    _loadTemplate(template) {
@@ -1698,7 +1703,6 @@ var JtControls = (function () {
 	        ];
 	    }
 	    attributeChangedCallback(name, oldValue, newValue) {
-	        console.log(name, oldValue, newValue);
 	        switch (name) {
 	            case 'groupclass':
 	                this._listbox.groupClassList.value = newValue;
@@ -1713,13 +1717,21 @@ var JtControls = (function () {
 	                this._listbox.listClassList.value = newValue;
 	                break;
 	            case 'headertemplate':
-	                if (newValue !== 'function') {
+	                if (newValue === null) {
+	                    this._headerTemplate = null;
+	                    this._listbox.headerTemplate = null;
+	                }
+	                else if (newValue !== 'function') {
 	                    this._headerTemplate = this._loadTemplate(newValue);
 	                    this._listbox.headerTemplate = this._headerTemplate;
 	                }
 	                break;
 	            case 'itemtemplate':
-	                if (newValue !== 'function') {
+	                if (newValue === null) {
+	                    this._itemTemplate = null;
+	                    this._listbox.itemTemplate = null;
+	                }
+	                else if (newValue !== 'function') {
 	                    this._itemTemplate = this._loadTemplate(newValue);
 	                    this._listbox.itemTemplate = this._itemTemplate;
 	                }
