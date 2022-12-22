@@ -51,7 +51,7 @@ Use in browser as IIFE
 ```html
 <head>
     <link rel="stylesheet" href="https://unpkg.com/@jadetree/ui/css/autocomplete.min.css" />
-    <script src="https//unpkg.com/@jadetree/ui/dist/autocomplete.iife.min.js"></script>
+    <script src="https//unpkg.com/@jadetree/ui/dist/components/autocomplete.iife.min.js"></script>
 </head>
 <body>
     <div>
