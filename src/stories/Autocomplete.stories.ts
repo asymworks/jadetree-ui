@@ -1,6 +1,8 @@
+import '../scss/autocomplete.scss';
+
 import { Story, Meta } from '@storybook/html';
-import JtAutocomplete from '../autocomplete';
-import { JtListItem } from '../listbox';
+import JtAutocomplete from '../components/autocomplete';
+import { JtListItem } from '../components/listbox';
 
 if (!customElements.get('jt-autocomplete')) {
     customElements.define("jt-autocomplete", JtAutocomplete);

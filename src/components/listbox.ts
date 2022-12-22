@@ -3,14 +3,15 @@
  * @module components/jt-combobox
  */
 
-import uid from './util/uid';
+import uid from '../util/uid';
 
 import {
+    JtTokenList,
     boolAttribute,
     htmlToElement,
     nextSibling,
     prevSibling,
-} from './util/dom';
+} from '../util/dom';
 
 /** Item UID Helper */
 const _itemIdGenerator = (id: string) => uid(`${id}-item`);
@@ -101,8 +102,6 @@ const _defaultOptions: JtListBoxOptions = {
             `\\b(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`,
             'i'
         ),
-    groupHeaderTemplate: defaultHeaderTemplate,
-    itemTemplate: defaultItemTemplate,
     pageSize: 10,
     type: 'single',
 };
@@ -115,8 +114,14 @@ export default class JtListBox {
     _cursorMoving = false;
     _filter = '';
     _focused = '';
+    _groupClassList: JtTokenList;
+    _headerClassList: JtTokenList;
+    _headerTemplate: JtListItemTemplate | null;
     _hover = '';
     _id = '';
+    _itemClassList: JtTokenList;
+    _itemTemplate: JtListItemTemplate | null;
+    _listClassList: JtTokenList;
     _observer: MutationObserver;
     _options: JtListBoxOptions;
     _regex: RegExp | null = null;
@@ -140,9 +145,7 @@ export default class JtListBox {
     _createDom(items: HTMLElement | JtListItem[]): HTMLUListElement {
         const els = `<ul class="jt-listbox" role="listbox" id="${this._id}" data-type="${this._options.type}"></ul>`;
         this._root = htmlToElement(els) as HTMLUListElement;
-        if (Array.isArray(this._options.listClasses)) {
-            this._root.classList.add(...this._options.listClasses);
-        }
+        this._root.classList.add(...this._listClassList.values());
 
         if (typeof this._options.tabIndex === 'number') {
             this._root.setAttribute('tabindex', `${this._options.tabIndex}`);
@@ -176,6 +179,7 @@ export default class JtListBox {
         // Add Empty List Placeholder
         const emptyEls = `<li class="jt-listbox__item" id="${this._id}-empty" data-empty="true" aria-hidden="true" hidden="true"></li>`;
         const emptyEl = htmlToElement(emptyEls) as HTMLElement;
+        emptyEl.classList.add(...this._itemClassList.values());
         if (this._options.canCreate) {
             emptyEl.setAttribute('role', 'option');
         } else {
@@ -211,11 +215,9 @@ export default class JtListBox {
 </li>`;
 
         const el = htmlToElement(els) as HTMLLIElement;
+        el.classList.add(...this._groupClassList.values());
         Object.keys(data || {}).length &&
             (el.dataset.itemData = JSON.stringify(data));
-        if (Array.isArray(this._options.groupListClasses)) {
-            el.classList.add(...this._options.groupListClasses);
-        }
 
         if (disabled) {
             el.setAttribute('aria-disabled', 'true');
@@ -226,13 +228,11 @@ export default class JtListBox {
             throw new Error('_createGroup did not render a ul[role=group]');
 
         const hdr = el.querySelector('li[role=presentation]') as HTMLLIElement;
+        hdr.classList.add(...this._headerClassList.values());
         if (!hdr)
             throw new Error(
                 '_createGroup did not render a li[role=presentation]'
             );
-        if (Array.isArray(this._options.groupHeaderClasses)) {
-            hdr.classList.add(...this._options.groupHeaderClasses);
-        }
 
         // Add Header Data and Render
         hdr.dataset.groupId = key;
@@ -264,10 +264,7 @@ export default class JtListBox {
         if (separator) {
             const els = `<li class="jt-listbox__item" id="${key}" role="separator"></li>`;
             const el = htmlToElement(els) as HTMLLIElement;
-            if (Array.isArray(this._options.itemClasses)) {
-                el.classList.add(...this._options.itemClasses);
-            }
-
+            el.classList.add(...this._itemClassList.values());
             el.dataset.itemData = JSON.stringify(data);
 
             this._renderItem(el);
@@ -288,11 +285,9 @@ export default class JtListBox {
             value || label
         }" data-label="${label || value}" role="option"></li>`;
         const el = htmlToElement(els) as HTMLLIElement;
+        el.classList.add(...this._itemClassList.values());
         Object.keys(data || {}).length &&
             (el.dataset.itemData = JSON.stringify(data));
-        if (Array.isArray(this._options.itemClasses)) {
-            el.classList.add(...this._options.itemClasses);
-        }
 
         if (data && (data as { searchLabel?: string }).searchLabel) {
             el.dataset.searchLabel = (
@@ -423,7 +418,7 @@ export default class JtListBox {
             return { key, label, group, disabled, data: element.dataset };
         } else if (element.dataset.role === 'separator') {
             /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-            const data = (({ label, role, ...rest }) => rest)(element.dataset);
+            const data = (({ key, label, role, ...rest }) => rest)(element.dataset);
             return { key, disabled, separator: true, data };
         } else {
             const value = element.value;
@@ -434,7 +429,7 @@ export default class JtListBox {
                 : element.textContent?.trim() || '';
 
             /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-            const data = (({ label, role, ...rest }) => rest || {})(
+            const data = (({ key, label, role, ...rest }) => rest || {})(
                 element.dataset
             );
             return {
@@ -536,16 +531,17 @@ export default class JtListBox {
         if (role === 'option') {
             item.disabled = boolAttribute(li, 'aria-disabled');
             item.focused = this._focused === li.id;
-            template = this._options.itemTemplate;
+            template = this._itemTemplate || defaultItemTemplate;
         } else if (role === 'separator') {
             item.separator = true;
-            template = this._options.itemTemplate;
+            template = this._itemTemplate || defaultItemTemplate;
         } else if (li.dataset.empty === 'true') {
             item.creating = this._options.canCreate;
             item.empty = true;
-            template = this._options.itemTemplate;
+            template = this._itemTemplate || defaultItemTemplate;
         } else if (role === 'presentation') {
-            template = this._options.groupHeaderTemplate;
+            console.log(item)
+            template = this._headerTemplate || defaultHeaderTemplate;
         }
 
         if (template) {
@@ -669,7 +665,8 @@ export default class JtListBox {
         });
         this._root
             .querySelectorAll('[role=presentation]')
-            .forEach(function (el) {
+            .forEach((el) => {
+                if (!(el instanceof HTMLElement)) return;
                 const group = el.closest('.jt-listbox__group');
                 if (!group) return;
                 if (!nextSibling(el, testFn)) {
@@ -679,6 +676,8 @@ export default class JtListBox {
                     group.removeAttribute('aria-hidden');
                     group.removeAttribute('hidden');
                 }
+
+                this._renderItem(el);
             });
 
         // Show/Hide the Empty List Element
@@ -693,6 +692,28 @@ export default class JtListBox {
             }
 
             this._renderItem(emptyEl);
+        }
+    }
+
+    /** @private */
+    _userClassChanged(
+        item: 'group' | 'header' | 'item' | 'list',
+        op: 'add' | 'remove',
+        ...tokens: string[]): void
+    {
+        console.log(item, op, tokens);
+        if (item === 'list') {
+            console.log(this._root.classList[op]);
+            this._root.classList[op](...tokens);
+        } else if (item === 'group') {
+            this._root.querySelectorAll('[role="group"]')
+                .forEach((el) => el.classList[op](...tokens));
+        } else if (item === 'header') {
+            this._root.querySelectorAll('[role="group"] [role="presentation"]')
+                .forEach((el) => el.classList[op](...tokens));
+        } else if (item === 'item') {
+            this._root.querySelectorAll('.jt-listbox__item')
+                .forEach((el) => el.classList[op](...tokens));
         }
     }
 
@@ -1065,6 +1086,48 @@ export default class JtListBox {
         return '';
     }
 
+    /** @return User Class List for Group Lists */
+    get groupClassList(): DOMTokenList {
+        return this._groupClassList;
+    }
+
+    /** @return User Class List for Group Headers */
+    get headerClassList(): DOMTokenList {
+        return this._headerClassList;
+    }
+
+    /** @return User Template for Group Headers */
+    get headerTemplate(): JtListItemTemplate {
+        return this._headerTemplate;
+    }
+
+    /** @param template New User Template for Group Headers */
+    set headerTemplate(template: JtListItemTemplate | null) {
+        this._headerTemplate = template;
+        this._updateItems();
+    }
+
+    /** @return User Class List for Listbox */
+    get listClassList(): DOMTokenList {
+        return this._listClassList;
+    }
+
+    /** @return User Class List for List Items */
+    get itemClassList(): DOMTokenList {
+        return this._itemClassList;
+    }
+
+    /** @return User Template for List Items */
+    get itemTemplate(): JtListItemTemplate {
+        return this._itemTemplate;
+    }
+
+    /** @param template New User Template for List Items */
+    set itemTemplate(template: JtListItemTemplate | null) {
+        this._itemTemplate = template;
+        this._updateItems();
+    }
+
     /** @return List Box Root Element */
     get root(): HTMLUListElement {
         return this._root;
@@ -1113,6 +1176,26 @@ export default class JtListBox {
     ) {
         this._id = id;
         this._options = Object.assign({}, _defaultOptions, options || {});
+
+        this._groupClassList = new JtTokenList(
+            (op, ...tokens) => this._userClassChanged('group', op, ...tokens),
+            this._options.groupListClasses || [],
+        );
+        this._headerClassList = new JtTokenList(
+            (op, ...tokens) => this._userClassChanged('header', op, ...tokens),
+            this._options.groupHeaderClasses || [],
+        );
+        this._itemClassList = new JtTokenList(
+            (op, ...tokens) => this._userClassChanged('item', op, ...tokens),
+            this._options.itemClasses || [],
+        );
+        this._listClassList = new JtTokenList(
+            (op, ...tokens) => this._userClassChanged('list', op, ...tokens),
+            this._options.listClasses || [],
+        );
+
+        this._headerTemplate = this._options.groupHeaderTemplate || null;
+        this._itemTemplate = this._options.itemTemplate || null;
 
         this._observer = new MutationObserver((list) =>
             this._elementChanged(list)

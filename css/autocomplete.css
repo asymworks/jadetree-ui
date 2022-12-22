@@ -23,7 +23,6 @@
   list-style-type: none;
   overflow-block: auto;
 }
-
 .jt-listbox ul {
   margin: 0;
   padding: 0;
@@ -36,15 +35,12 @@
   padding: 0.2em;
   cursor: default;
 }
-
 .jt-listbox__item[aria-hidden=true], .jt-listbox__item[hidden] {
   display: none;
 }
-
 .jt-listbox__item[aria-disabled=true] {
   color: var(--_jt-control-disabled-color);
 }
-
 .jt-listbox__item[role=separator] {
   height: 0;
   padding: 0;
@@ -53,17 +49,14 @@
           border-block-end: 1px solid var(--_jt-control-disabled-color);
   overflow-y: hidden;
 }
-
 .jt-listbox__item.jt-hover {
   background-color: var(--_jt-control-hover-background);
   color: var(--_jt-control-hover-color);
 }
-
 .jt-listbox__item.jt-focused {
   outline: var(--_jt-control-disabled-color) var(--_jt-focus-ring-style) var(--_jt-focus-ring-width);
   outline-offset: var(--_jt-focus-ring-offset);
 }
-
 .jt-focus .jt-listbox__item.jt-focused {
   outline: var(--_jt-focus-ring-color) var(--_jt-focus-ring-style) var(--_jt-focus-ring-width);
   outline-offset: var(--_jt-focus-ring-offset);
@@ -95,7 +88,6 @@ jt-autocomplete {
   color: var(--_jt-control-color);
   background-color: var(--_jt-control-background);
 }
-
 jt-autocomplete .jt-control {
   position: relative;
   display: flex;
@@ -103,7 +95,6 @@ jt-autocomplete .jt-control {
   border: 1px solid var(--_jt-control-border);
   border-radius: var(--_jt-control-border-radius);
 }
-
 jt-autocomplete .jt-control input {
   flex: 1 0 auto;
   border: none;
@@ -113,7 +104,6 @@ jt-autocomplete .jt-control input {
   border-start-start-radius: var(--_jt-control-border-radius);
   border-end-start-radius: var(--_jt-control-border-radius);
 }
-
 jt-autocomplete .jt-control__buttons {
   position: absolute;
   inset-block: 0;
@@ -126,17 +116,14 @@ jt-autocomplete .jt-control__buttons {
   -webkit-padding-end: 0.2em;
           padding-inline-end: 0.2em;
 }
-
 jt-autocomplete .jt-control:hover {
   border: 1px solid var(--_jt-control-border-hover);
 }
-
 jt-autocomplete .jt-control.jt-focus {
   border-color: transparent;
   outline: 2px solid var(--_jt-control-border-focus);
   outline-offset: -1px;
 }
-
 jt-autocomplete button[data-action=close] {
   font-size: inherit;
   width: var(--_jt-control-arrow-size);
@@ -149,11 +136,9 @@ jt-autocomplete button[data-action=close] {
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' stroke='currentColor' class='w-5 h-5'%3E%3Cpath fill-rule='evenodd' d='M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z' clip-rule='evenodd' /%3E%3C/svg%3E");
   display: none;
 }
-
 jt-autocomplete button[data-action=close]:dir(rtl) {
   transform: rotate(180deg);
 }
-
 jt-autocomplete button[data-action=open] {
   font-size: inherit;
   width: var(--_jt-control-arrow-size);
@@ -165,11 +150,9 @@ jt-autocomplete button[data-action=open] {
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' stroke='currentColor' class='w-5 h-5'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd' /%3E%3C/svg%3E");
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' stroke='currentColor' class='w-5 h-5'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd' /%3E%3C/svg%3E");
 }
-
 jt-autocomplete button[data-action=open][aria-expanded=true] {
   transform: rotate(180deg);
 }
-
 jt-autocomplete button[data-action=clear] {
   font-size: inherit;
   width: 1em;
@@ -181,11 +164,9 @@ jt-autocomplete button[data-action=clear] {
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' stroke='currentColor' viewBox='0 0 20 20' class='w-5 h-5'%3E%3Cpath d='M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z' /%3E%3C/svg%3E");
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' stroke='currentColor' viewBox='0 0 20 20' class='w-5 h-5'%3E%3Cpath d='M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z' /%3E%3C/svg%3E");
 }
-
 jt-autocomplete.jt-placeholder-shown button[data-action=clear] {
   display: none;
 }
-
 jt-autocomplete .jt-popup {
   display: none;
   position: absolute;
@@ -195,28 +176,23 @@ jt-autocomplete .jt-popup {
   border-end-end-radius: var(--_jt-control-border-radius);
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 }
-
 jt-autocomplete .jt-popup:last-child {
   border-end-start-radius: var(--_jt-control-border-radius);
   border-end-end-radius: var(--_jt-control-border-radius);
 }
-
 jt-autocomplete .jt-popup .jt-listbox {
   max-block-size: var(--_jt-listbox-max-height);
   overflow-block: auto;
 }
-
 jt-autocomplete.jt-open .jt-popup {
   display: block;
 }
-
 jt-autocomplete.jt-open .jt-control {
   -webkit-border-after: none;
           border-block-end: none;
   border-end-start-radius: 0;
   border-end-end-radius: 0;
 }
-
 @media not (pointer: fine), (max-width: 640px) {
   jt-autocomplete.jt-open {
     position: fixed;

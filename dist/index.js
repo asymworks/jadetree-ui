@@ -1,31 +1,4 @@
 /*! JtControls v0.1.0 | (c) 2022 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
-/******************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-
-function __rest(s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-}
-
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 var qinu_minExports = {};
@@ -142,6 +115,99 @@ function boolAttribute(el, name, options) {
     // Absence of the attribute always implies false
     return false;
 }
+/**
+ * Implementation of {@link DOMTokenList} used by custom components for user
+ * defined classes on component parts. The class provides a callback function
+ * which is invoked for each token `add` or `remove` operation.
+ */
+class JtTokenList {
+    [Symbol.iterator]() {
+        return this.values();
+    }
+    get length() {
+        return this._tokens.length;
+    }
+    get value() {
+        return this._tokens.join(' ');
+    }
+    set value(value) {
+        if (!value) {
+            if (this._tokens.length > 0) {
+                this._callback('remove', ...this._tokens);
+            }
+            this._tokens = [];
+        }
+        else {
+            const _tokens = (value || '').split(' ').map(s => s.trim());
+            const _added = _tokens.filter(t => !this._tokens.includes(t));
+            const _removed = this._tokens.filter(t => !_tokens.includes(t));
+            (_added.length > 0) && this._callback('add', ..._added);
+            (_removed.length > 0) && this._callback('remove', ..._removed);
+        }
+    }
+    add(...tokens) {
+        const _tokens = tokens.filter(t => !this._tokens.includes(t));
+        if (_tokens.length > 0) {
+            this._tokens.push(..._tokens);
+            this._callback('add', ..._tokens);
+        }
+    }
+    contains(token) {
+        return this._tokens.includes(token);
+    }
+    entries() {
+        return this._tokens.entries();
+    }
+    forEach(callbackfn, thisArg) {
+        const cb = callbackfn.bind(thisArg);
+        for (const [key, cls] of this.entries()) {
+            cb(cls, key, this);
+        }
+    }
+    item(index) {
+        if (index < 0 || index >= this.length)
+            return null;
+        return this._tokens.at(index);
+    }
+    keys() {
+        return this._tokens.keys();
+    }
+    remove(...tokens) {
+        const _tokens = tokens.filter(t => this._tokens.includes(t));
+        if (_tokens.length > 0) {
+            this._tokens = this._tokens.filter(t => !_tokens.includes(t));
+            this._callback('remove', ..._tokens);
+        }
+    }
+    replace(token, newToken) {
+        const idx = this._tokens.indexOf(token);
+        if (idx === -1)
+            return false;
+        this._tokens[idx] = newToken;
+        this._callback('remove', token);
+        this._callback('add', newToken);
+    }
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+    supports(token) {
+        return true;
+    }
+    toggle(token, force) {
+        if (!this.contains(token) && (typeof force === 'undefined' || force)) {
+            this.add(token);
+        }
+        else if (this.contains(token) && (typeof force === 'undefined' || !force)) {
+            this.remove(token);
+        }
+        return this.contains(token);
+    }
+    values() {
+        return this._tokens.values();
+    }
+    constructor(cb, tokens) {
+        this._callback = cb;
+        this._tokens = tokens || [];
+    }
+}
 
 /**
  * Jade Tree ListBox Module
@@ -174,8 +240,6 @@ const _defaultOptions = {
     canSelect: true,
     cursorTimeout: 150,
     filterRegex: (search) => new RegExp(`\\b(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'i'),
-    groupHeaderTemplate: defaultHeaderTemplate,
-    itemTemplate: defaultItemTemplate,
     pageSize: 10,
     type: 'single',
 };
@@ -200,9 +264,7 @@ class JtListBox {
     _createDom(items) {
         const els = `<ul class="jt-listbox" role="listbox" id="${this._id}" data-type="${this._options.type}"></ul>`;
         this._root = htmlToElement(els);
-        if (Array.isArray(this._options.listClasses)) {
-            this._root.classList.add(...this._options.listClasses);
-        }
+        this._root.classList.add(...this._listClassList.values());
         if (typeof this._options.tabIndex === 'number') {
             this._root.setAttribute('tabindex', `${this._options.tabIndex}`);
         }
@@ -230,6 +292,7 @@ class JtListBox {
         // Add Empty List Placeholder
         const emptyEls = `<li class="jt-listbox__item" id="${this._id}-empty" data-empty="true" aria-hidden="true" hidden="true"></li>`;
         const emptyEl = htmlToElement(emptyEls);
+        emptyEl.classList.add(...this._itemClassList.values());
         if (this._options.canCreate) {
             emptyEl.setAttribute('role', 'option');
         }
@@ -258,11 +321,9 @@ class JtListBox {
     </ul>
 </li>`;
         const el = htmlToElement(els);
+        el.classList.add(...this._groupClassList.values());
         Object.keys(data || {}).length &&
             (el.dataset.itemData = JSON.stringify(data));
-        if (Array.isArray(this._options.groupListClasses)) {
-            el.classList.add(...this._options.groupListClasses);
-        }
         if (disabled) {
             el.setAttribute('aria-disabled', 'true');
         }
@@ -270,11 +331,9 @@ class JtListBox {
         if (!ul)
             throw new Error('_createGroup did not render a ul[role=group]');
         const hdr = el.querySelector('li[role=presentation]');
+        hdr.classList.add(...this._headerClassList.values());
         if (!hdr)
             throw new Error('_createGroup did not render a li[role=presentation]');
-        if (Array.isArray(this._options.groupHeaderClasses)) {
-            hdr.classList.add(...this._options.groupHeaderClasses);
-        }
         // Add Header Data and Render
         hdr.dataset.groupId = key;
         hdr.dataset.itemData = JSON.stringify(data);
@@ -301,9 +360,7 @@ class JtListBox {
         if (separator) {
             const els = `<li class="jt-listbox__item" id="${key}" role="separator"></li>`;
             const el = htmlToElement(els);
-            if (Array.isArray(this._options.itemClasses)) {
-                el.classList.add(...this._options.itemClasses);
-            }
+            el.classList.add(...this._itemClassList.values());
             el.dataset.itemData = JSON.stringify(data);
             this._renderItem(el);
             return el;
@@ -316,11 +373,9 @@ class JtListBox {
         }
         const els = `<li class="jt-listbox__item" id="${key}" data-value="${value || label}" data-label="${label || value}" role="option"></li>`;
         const el = htmlToElement(els);
+        el.classList.add(...this._itemClassList.values());
         Object.keys(data || {}).length &&
             (el.dataset.itemData = JSON.stringify(data));
-        if (Array.isArray(this._options.itemClasses)) {
-            el.classList.add(...this._options.itemClasses);
-        }
         if (data && data.searchLabel) {
             el.dataset.searchLabel = data.searchLabel;
         }
@@ -426,10 +481,7 @@ class JtListBox {
         }
         else if (element.dataset.role === 'separator') {
             /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-            const data = ((_a) => {
-                var rest = __rest(_a, ["label", "role"]);
-                return rest;
-            })(element.dataset);
+            const data = (({ key, label, role, ...rest }) => rest)(element.dataset);
             return { key, disabled, separator: true, data };
         }
         else {
@@ -440,10 +492,7 @@ class JtListBox {
                     ? element.label
                     : ((_a = element.textContent) === null || _a === void 0 ? void 0 : _a.trim()) || '';
             /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-            const data = ((_a) => {
-                var rest = __rest(_a, ["label", "role"]);
-                return rest || {};
-            })(element.dataset);
+            const data = (({ key, label, role, ...rest }) => rest || {})(element.dataset);
             return {
                 key,
                 label: label || value,
@@ -531,19 +580,20 @@ class JtListBox {
         if (role === 'option') {
             item.disabled = boolAttribute(li, 'aria-disabled');
             item.focused = this._focused === li.id;
-            template = this._options.itemTemplate;
+            template = this._itemTemplate || defaultItemTemplate;
         }
         else if (role === 'separator') {
             item.separator = true;
-            template = this._options.itemTemplate;
+            template = this._itemTemplate || defaultItemTemplate;
         }
         else if (li.dataset.empty === 'true') {
             item.creating = this._options.canCreate;
             item.empty = true;
-            template = this._options.itemTemplate;
+            template = this._itemTemplate || defaultItemTemplate;
         }
         else if (role === 'presentation') {
-            template = this._options.groupHeaderTemplate;
+            console.log(item);
+            template = this._headerTemplate || defaultHeaderTemplate;
         }
         if (template) {
             li.innerHTML = template(item);
@@ -659,7 +709,9 @@ class JtListBox {
         });
         this._root
             .querySelectorAll('[role=presentation]')
-            .forEach(function (el) {
+            .forEach((el) => {
+            if (!(el instanceof HTMLElement))
+                return;
             const group = el.closest('.jt-listbox__group');
             if (!group)
                 return;
@@ -671,6 +723,7 @@ class JtListBox {
                 group.removeAttribute('aria-hidden');
                 group.removeAttribute('hidden');
             }
+            this._renderItem(el);
         });
         // Show/Hide the Empty List Element
         const emptyEl = this._root.querySelector(`#${this._id}-empty`);
@@ -684,6 +737,26 @@ class JtListBox {
                 emptyEl.setAttribute('hidden', 'true');
             }
             this._renderItem(emptyEl);
+        }
+    }
+    /** @private */
+    _userClassChanged(item, op, ...tokens) {
+        console.log(item, op, tokens);
+        if (item === 'list') {
+            console.log(this._root.classList[op]);
+            this._root.classList[op](...tokens);
+        }
+        else if (item === 'group') {
+            this._root.querySelectorAll('[role="group"]')
+                .forEach((el) => el.classList[op](...tokens));
+        }
+        else if (item === 'header') {
+            this._root.querySelectorAll('[role="group"] [role="presentation"]')
+                .forEach((el) => el.classList[op](...tokens));
+        }
+        else if (item === 'item') {
+            this._root.querySelectorAll('.jt-listbox__item')
+                .forEach((el) => el.classList[op](...tokens));
         }
     }
     /** @private */
@@ -1007,6 +1080,40 @@ class JtListBox {
             return el.dataset.value;
         return '';
     }
+    /** @return User Class List for Group Lists */
+    get groupClassList() {
+        return this._groupClassList;
+    }
+    /** @return User Class List for Group Headers */
+    get headerClassList() {
+        return this._headerClassList;
+    }
+    /** @return User Template for Group Headers */
+    get headerTemplate() {
+        return this._headerTemplate;
+    }
+    /** @param template New User Template for Group Headers */
+    set headerTemplate(template) {
+        this._headerTemplate = template;
+        this._updateItems();
+    }
+    /** @return User Class List for Listbox */
+    get listClassList() {
+        return this._listClassList;
+    }
+    /** @return User Class List for List Items */
+    get itemClassList() {
+        return this._itemClassList;
+    }
+    /** @return User Template for List Items */
+    get itemTemplate() {
+        return this._itemTemplate;
+    }
+    /** @param template New User Template for List Items */
+    set itemTemplate(template) {
+        this._itemTemplate = template;
+        this._updateItems();
+    }
     /** @return List Box Root Element */
     get root() {
         return this._root;
@@ -1059,6 +1166,12 @@ class JtListBox {
         this._selected = [];
         this._id = id;
         this._options = Object.assign({}, _defaultOptions, options || {});
+        this._groupClassList = new JtTokenList((op, ...tokens) => this._userClassChanged('group', op, ...tokens), this._options.groupListClasses || []);
+        this._headerClassList = new JtTokenList((op, ...tokens) => this._userClassChanged('header', op, ...tokens), this._options.groupHeaderClasses || []);
+        this._itemClassList = new JtTokenList((op, ...tokens) => this._userClassChanged('item', op, ...tokens), this._options.itemClasses || []);
+        this._listClassList = new JtTokenList((op, ...tokens) => this._userClassChanged('list', op, ...tokens), this._options.listClasses || []);
+        this._headerTemplate = this._options.groupHeaderTemplate || null;
+        this._itemTemplate = this._options.itemTemplate || null;
         this._observer = new MutationObserver((list) => this._elementChanged(list));
         if (items instanceof HTMLElement) {
             items.dataset.jtListBox = this._id;
@@ -1071,6 +1184,22 @@ class JtListBox {
         this._root.addEventListener('pointerenter', (ev) => this._onPointerEnter(ev), { capture: true });
         this._root.addEventListener('pointerleave', (ev) => this._onPointerLeave(ev), { capture: true });
     }
+}
+
+/**
+ * HTML Templating Helpers
+ */
+/**
+ * Get a template from a string
+ * https://stackoverflow.com/a/41015840
+ * @param  str    The string to interpolate
+ * @param  params The parameters
+ * @return        The interpolated string
+ */
+function interpolate(str, params) {
+    const names = Object.keys(params);
+    const vals = Object.values(params);
+    return new Function(...names, `return \`${str}\`;`)(...vals);
 }
 
 /**
@@ -1102,6 +1231,74 @@ class JtAutocomplete extends HTMLElement {
         if (this._input.disabled != value) {
             this._input.disabled = value;
         }
+    }
+    get groupClass() {
+        return this.getAttribute('groupclass');
+    }
+    set groupClass(value) {
+        this.setAttribute('groupclass', value);
+    }
+    get groupClassList() {
+        return this._listbox.groupClassList;
+    }
+    get headerClass() {
+        return this.getAttribute('headerclass');
+    }
+    set headerClass(value) {
+        this.setAttribute('headerclass', value);
+    }
+    get headerClassList() {
+        return this._listbox.headerClassList;
+    }
+    get headerTemplate() {
+        return this._headerTemplate;
+    }
+    set headerTemplate(template) {
+        if (typeof template === 'function') {
+            this.setAttribute('headertemplate', 'function');
+            this._headerTemplate = template;
+            this._listbox.headerTemplate = template;
+        }
+        else if (typeof template === 'string') {
+            this.setAttribute('headertemplate', template);
+        }
+        else if (!template) {
+            this.removeAttribute('headertemplate');
+        }
+    }
+    get itemClass() {
+        return this.getAttribute('itemclass');
+    }
+    set itemClass(value) {
+        this.setAttribute('itemclass', value);
+    }
+    get itemClassList() {
+        return this._listbox.itemClassList;
+    }
+    get itemTemplate() {
+        return this._itemTemplate;
+    }
+    set itemTemplate(template) {
+        if (typeof template === 'function') {
+            this.setAttribute('itemtemplate', 'function');
+            this._itemTemplate = template;
+            this._listbox.itemTemplate = template;
+        }
+        else if (typeof template === 'string') {
+            this.setAttribute('itemtemplate', template);
+        }
+        else if (!template) {
+            this.removeAttribute('itemtemplate');
+        }
+    }
+    get listClass() {
+        return this.getAttribute('listclass');
+    }
+    set listClass(value) {
+        this.setAttribute('listclass', value);
+    }
+    get listClassList() {
+        return this._listbox.listClassList;
     }
     get open() {
         return boolAttribute(this._input, 'aria-expanded');
@@ -1200,6 +1397,25 @@ class JtAutocomplete extends HTMLElement {
     /** @private */
     _listBoxOptions() {
         return {};
+    }
+    /** @private */
+    _loadTemplate(template) {
+        if (!template)
+            return null;
+        // Treat as a template string
+        if (template.includes('${')) {
+            return (item) => interpolate(template, { item });
+        }
+        // Load a <template> by Id
+        try {
+            const tmplEl = document.querySelector(`#${template}`);
+            if (tmplEl instanceof HTMLElement) {
+                return (item) => interpolate(tmplEl.innerHTML, { item });
+            }
+        }
+        catch ( /* pass */_a) { /* pass */ }
+        // Do not use static strings
+        return null;
     }
     /** @private */
     _onClick() {
@@ -1442,6 +1658,10 @@ class JtAutocomplete extends HTMLElement {
             this._listboxSource = `#${this._input.getAttribute('list')}`;
         }
         this._listbox = new JtListBox(`${this._id}-listbox`, [], this._listBoxOptions());
+        this._listbox.groupClassList.value = this.getAttribute('groupClass');
+        this._listbox.headerClassList.value = this.getAttribute('headerClass');
+        this._listbox.itemClassList.value = this.getAttribute('itemClass');
+        this._listbox.listClassList.value = this.getAttribute('listClass');
         const popup = document.createElement('div');
         popup.classList.add('jt-popup');
         popup.appendChild(this._listbox.root);
@@ -1460,6 +1680,52 @@ class JtAutocomplete extends HTMLElement {
         // Register Click-Away Handler
         document.addEventListener('click', (ev) => this._onDocumentClick(ev));
     }
+    /* -- Web Component Lifecycle Hooks --*/
+    static get observedAttributes() {
+        return [
+            'groupclass',
+            'headerclass',
+            'headertemplate',
+            'itemclass',
+            'itemtemplate',
+            'listclass',
+            'src',
+        ];
+    }
+    attributeChangedCallback(name, oldValue, newValue) {
+        console.log(name, oldValue, newValue);
+        switch (name) {
+            case 'groupclass':
+                this._listbox.groupClassList.value = newValue;
+                break;
+            case 'headerclass':
+                this._listbox.headerClassList.value = newValue;
+                break;
+            case 'itemclass':
+                this._listbox.itemClassList.value = newValue;
+                break;
+            case 'listclass':
+                this._listbox.listClassList.value = newValue;
+                break;
+            case 'headertemplate':
+                if (newValue !== 'function') {
+                    this._headerTemplate = this._loadTemplate(newValue);
+                    this._listbox.headerTemplate = this._headerTemplate;
+                }
+                break;
+            case 'itemtemplate':
+                if (newValue !== 'function') {
+                    this._itemTemplate = this._loadTemplate(newValue);
+                    this._listbox.itemTemplate = this._itemTemplate;
+                }
+                break;
+            case 'src':
+                this._closeList();
+                this._listboxLoaded = false;
+                this._listboxSource = newValue;
+                break;
+        }
+    }
     /* -- Web Component Registration Helper -- */
     static register() {
         customElements.define("jt-autocomplete", JtAutocomplete);
@@ -1468,5 +1734,3 @@ class JtAutocomplete extends HTMLElement {
 if (typeof __ROLLUP_IIFE === 'boolean' && __ROLLUP_IIFE) {
     JtAutocomplete.register();
 }
-
-export { JtAutocomplete as default };

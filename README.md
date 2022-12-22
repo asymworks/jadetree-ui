@@ -67,3 +67,10 @@ Use in browser as IIFE
     </div>
 </body>
 ```
+
+## User-Defined Item Templates
+The `JtAutocomplete` and `JtSelect` support user-defined templates for listbox
+items, which allow the developer to define custom markup for each list entry.
+Use these with care, as the inner HTML of the `<template>` tag is evaluated
+with the JavaScript interpreter. **Do not pass user-defined input to the item
+template without first sanitizing it**.

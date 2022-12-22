@@ -2,6 +2,7 @@
  * Jade Tree ListBox Module
  * @module components/jt-combobox
  */
+import { JtTokenList } from '../util/dom';
 /**
  * List Box Item Data
  * @type JtListItemData
@@ -66,8 +67,14 @@ export default class JtListBox {
     _cursorMoving: boolean;
     _filter: string;
     _focused: string;
+    _groupClassList: JtTokenList;
+    _headerClassList: JtTokenList;
+    _headerTemplate: JtListItemTemplate | null;
     _hover: string;
     _id: string;
+    _itemClassList: JtTokenList;
+    _itemTemplate: JtListItemTemplate | null;
+    _listClassList: JtTokenList;
     _observer: MutationObserver;
     _options: JtListBoxOptions;
     _regex: RegExp | null;
@@ -111,6 +118,8 @@ export default class JtListBox {
     _setHover(id?: string): void;
     /** @private */
     _updateItems(): void;
+    /** @private */
+    _userClassChanged(item: 'group' | 'header' | 'item' | 'list', op: 'add' | 'remove', ...tokens: string[]): void;
     /** @private */
     _valueForId(id: string): string | undefined;
     /** @private */
@@ -216,6 +225,22 @@ export default class JtListBox {
     get focusedId(): string;
     /** @return Option Value that is currently Active */
     get focusedValue(): string;
+    /** @return User Class List for Group Lists */
+    get groupClassList(): DOMTokenList;
+    /** @return User Class List for Group Headers */
+    get headerClassList(): DOMTokenList;
+    /** @return User Template for Group Headers */
+    get headerTemplate(): JtListItemTemplate;
+    /** @param template New User Template for Group Headers */
+    set headerTemplate(template: JtListItemTemplate | null);
+    /** @return User Class List for Listbox */
+    get listClassList(): DOMTokenList;
+    /** @return User Class List for List Items */
+    get itemClassList(): DOMTokenList;
+    /** @return User Template for List Items */
+    get itemTemplate(): JtListItemTemplate;
+    /** @param template New User Template for List Items */
+    set itemTemplate(template: JtListItemTemplate | null);
     /** @return List Box Root Element */
     get root(): HTMLUListElement;
     /** @return Current Selection */

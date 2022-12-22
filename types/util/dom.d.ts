@@ -43,3 +43,36 @@ export type BoolAttributeOptions = {
  * @param options.aria Require the attribute to be 'true' or 'false'
  */
 export declare function boolAttribute(el: Element, name: string, options?: BoolAttributeOptions): boolean;
+/**
+ * Callback Function Signature for {@link JtTokenList}
+ * @param operation Set to 'add' or 'remove'
+ * @param tokens    List of tokens to add or remove
+ */
+type JtTokenCallback = (operation: 'add' | 'remove', ...tokens: string[]) => void;
+/**
+ * Implementation of {@link DOMTokenList} used by custom components for user
+ * defined classes on component parts. The class provides a callback function
+ * which is invoked for each token `add` or `remove` operation.
+ */
+export declare class JtTokenList implements DOMTokenList {
+    [key: number]: string;
+    [Symbol.iterator](): IterableIterator<string>;
+    _callback: JtTokenCallback;
+    _tokens: string[];
+    get length(): number;
+    get value(): string;
+    set value(value: string | null);
+    add(...tokens: string[]): void;
+    contains(token: string): boolean;
+    entries(): IterableIterator<[number, string]>;
+    forEach(callbackfn: (value: string, key: number, parent: DOMTokenList) => void, thisArg?: unknown): void;
+    item(index: number): string;
+    keys(): IterableIterator<number>;
+    remove(...tokens: string[]): void;
+    replace(token: string, newToken: string): boolean;
+    supports(token: string): boolean;
+    toggle(token: string, force?: boolean): boolean;
+    values(): IterableIterator<string>;
+    constructor(cb: JtTokenCallback, tokens?: string[]);
+}
+export {};

@@ -1,0 +1,65 @@
+/* Base CSS Styles for Jade Tree Components */
+:root {
+  --jt-accent-color: #08e;
+  --jt-control-arrow-size: 1.2em;
+  --jt-control-color: #000;
+  --jt-control-background: #fff;
+  --jt-control-border: #999;
+  --jt-control-border-radius: 3px;
+  --jt-control-border-hover: #555;
+  --jt-control-border-focus: #08f;
+  --jt-control-disabled-color: #aaa;
+  --jt-control-hover-background: var(--jt-accent-color, #08e);
+  --jt-control-hover-color: #fff;
+}
+
+/* Synthetic Control with Control Buttons */
+/* Arrow Button that points down or up if aria-expanded is true */
+/* Back (Left-Arrow) Button */
+/* Clear Button */
+.jt-listbox {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  overflow-block: auto;
+}
+.jt-listbox ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.jt-listbox__item {
+  position: relative;
+  display: block;
+  padding: 0.2em;
+  cursor: default;
+}
+.jt-listbox__item[aria-hidden=true], .jt-listbox__item[hidden] {
+  display: none;
+}
+.jt-listbox__item[aria-disabled=true] {
+  color: var(--_jt-control-disabled-color);
+}
+.jt-listbox__item[role=separator] {
+  height: 0;
+  padding: 0;
+  margin-block: var(--_jt-listbox-separator-margin);
+  -webkit-border-after: 1px solid var(--_jt-control-disabled-color);
+          border-block-end: 1px solid var(--_jt-control-disabled-color);
+  overflow-y: hidden;
+}
+.jt-listbox__item.jt-hover {
+  background-color: var(--_jt-control-hover-background);
+  color: var(--_jt-control-hover-color);
+}
+.jt-listbox__item.jt-focused {
+  outline: var(--_jt-control-disabled-color) var(--_jt-focus-ring-style) var(--_jt-focus-ring-width);
+  outline-offset: var(--_jt-focus-ring-offset);
+}
+.jt-focus .jt-listbox__item.jt-focused {
+  outline: var(--_jt-focus-ring-color) var(--_jt-focus-ring-style) var(--_jt-focus-ring-width);
+  outline-offset: var(--_jt-focus-ring-offset);
+  background-color: var(--_jt-focus-background);
+  color: var(--_jt-focus-color);
+}

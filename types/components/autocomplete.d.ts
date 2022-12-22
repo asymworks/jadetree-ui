@@ -1,23 +1,41 @@
 /**
  * Jade Tree Autocomplete Text Input Component
  */
-import './scss/autocomplete.scss';
-import JtListBox, { JtListBoxOptions, JtListItem } from './listbox';
+import JtListBox, { JtListBoxOptions, JtListItem, JtListItemTemplate } from './listbox';
 export default class JtAutocomplete extends HTMLElement {
     _btnOpen: HTMLButtonElement;
     _btnClear?: HTMLButtonElement;
     _btnClose: HTMLButtonElement;
+    _headerTemplate: string | JtListItemTemplate | null;
     _listbox?: JtListBox;
     _listboxFocused: boolean;
     _listboxLoaded: boolean;
     _listboxSource: string;
     _input: HTMLInputElement;
     _id: string;
+    _itemTemplate: string | JtListItemTemplate | null;
     _mode: string;
     _observer: MutationObserver;
+    _templateChanging: boolean;
     _textboxFocused: boolean;
     get disabled(): boolean;
     set disabled(value: boolean);
+    get groupClass(): string;
+    set groupClass(value: string);
+    get groupClassList(): DOMTokenList;
+    get headerClass(): string;
+    set headerClass(value: string);
+    get headerClassList(): DOMTokenList;
+    get headerTemplate(): string | JtListItemTemplate | null;
+    set headerTemplate(template: string | JtListItemTemplate | null);
+    get itemClass(): string;
+    set itemClass(value: string);
+    get itemClassList(): DOMTokenList;
+    get itemTemplate(): string | JtListItemTemplate | null;
+    set itemTemplate(template: string | JtListItemTemplate | null);
+    get listClass(): string;
+    set listClass(value: string);
+    get listClassList(): DOMTokenList;
     get open(): boolean;
     set open(value: boolean);
     get readOnly(): boolean;
@@ -36,6 +54,8 @@ export default class JtAutocomplete extends HTMLElement {
     _focusTextbox(): void;
     /** @private */
     _listBoxOptions(): JtListBoxOptions;
+    /** @private */
+    _loadTemplate(template: string): JtListItemTemplate | null;
     /** @private */
     _onClick(): void;
     /** @private */
@@ -64,6 +84,8 @@ export default class JtAutocomplete extends HTMLElement {
     _setValue(value: string): void;
     clear(): void;
     constructor();
+    static get observedAttributes(): string[];
+    attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
     static register(): void;
 }
 declare global {
