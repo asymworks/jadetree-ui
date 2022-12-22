@@ -52,10 +52,8 @@ export default {
     },
 } as Meta;
 
-const Template: Story<AutocompleteProps> = (args) => {
-    return `
-<jt-autocomplete${ args.clearable ? ' clearable' : ''}>
-    <input 
+const InputElement: (args: AutocompleteProps) => string = (args) => {
+    return `<input 
         autocomplete="off"
         type="${ args.type }"
         id="example"
@@ -65,8 +63,10 @@ const Template: Story<AutocompleteProps> = (args) => {
         ${ args.readonly ? ' readonly' : '' }
         ${ args.placeholder ? ' placeholder="' + args.placeholder + '"' : '' }
         ${ args.value ? ' value="' + args.value + '"' : '' }
-    />
-    <datalist id="example-list">
+    />`.replace(/\s\s+/g, ' ');
+};
+
+const DataList = `<datalist id="example-list">
         <option>Apples</option>
         <option>Asparagus</option>
         <option disabled>Bananas</option>
@@ -82,7 +82,13 @@ const Template: Story<AutocompleteProps> = (args) => {
             <option>Lamb</option>
             <option>Pork</option>
         </optgroup>
-    </datalist>
+    </datalist>`;
+
+const Template: Story<AutocompleteProps> = (args) => {
+    return `
+<jt-autocomplete${ args.clearable ? ' clearable' : ''}>
+    ${InputElement(args)}
+    ${DataList}
 </jt-autocomplete>
 `;
 }
@@ -100,17 +106,7 @@ Default.args = {
 export const API = (args) => {
     return `
 <jt-autocomplete${ args.clearable ? ' clearable' : ''} src="https://mock-api.jadetree.io/groceries">
-    <input 
-        autocomplete="off"
-        type="${ args.type }"
-        id="example"
-        name="example"
-        list="example-list"
-        ${ args.disabled ? ' disabled' : ''} 
-        ${ args.readonly ? ' readonly' : '' }
-        ${ args.placeholder ? ' placeholder="' + args.placeholder + '"' : '' }
-        ${ args.value ? ' value="' + args.value + '"' : '' }
-    />
+    ${InputElement(args)}
 </jt-autocomplete>
 `;
 }

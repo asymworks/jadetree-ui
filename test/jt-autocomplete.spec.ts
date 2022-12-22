@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import { within } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { JSDOM } from 'jsdom';
-import JtAutocomplete from '../src/autocomplete';
+import JtAutocomplete from '../src/components/autocomplete';
 import { waitForAttr, waitForRemovedAttr } from './util/test-util';
 
 beforeAll(() => {

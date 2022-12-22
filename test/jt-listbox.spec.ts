@@ -2,7 +2,7 @@
 import '@testing-library/jest-dom';
 import { screen, within } from '@testing-library/dom';
 import { JSDOM } from 'jsdom';
-import JtListBox, { JtListBoxOptions, JtListItem } from '../src/listbox';
+import JtListBox, { JtListBoxOptions, JtListItem } from '../src/components/listbox';
 
 beforeEach(() => {
     const dom = new JSDOM(

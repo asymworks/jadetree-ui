@@ -7,13 +7,13 @@
     "outDir": "./lib",
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "types": [ "node", "jest", "@testing-library/jest-dom" ],
+    "types": [ "node", "jest", "@testing-library/jest-dom" ]
   },
   "exclude": [
     "node_modules",
     "./src/stories/**/*"
   ],
   "include": [
-    "./src/**/*",
-  ],
+    "./src/**/*"
+  ]
 }
