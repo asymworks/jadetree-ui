@@ -90,6 +90,7 @@
     "qinu": "^2.0.0"
   },
   "files": [
+    "/css",
     "/dist",
     "/lib",
     "/types"
