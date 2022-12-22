@@ -25,7 +25,7 @@ host.innerHTML = `
 Use in browser as ES6 Module
 ```html
 <head>
-    <link rel="stylesheet" href="https://unpkg.com/@jadetree/ui/lib/css/autocomplete.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@jadetree/ui/css/autocomplete.min.css" />
 </head>
 <body>
     <div>
@@ -50,8 +50,8 @@ Use in browser as ES6 Module
 Use in browser as IIFE
 ```html
 <head>
-    <link rel="stylesheet" href="https://unpkg.com/@jadetree/ui/lib/css/autocomplete.min.css" />
-    <script src="https//unpkg.com/@jadetree/ui/lib/autocomplete.iife.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@jadetree/ui/css/autocomplete.min.css" />
+    <script src="https//unpkg.com/@jadetree/ui/dist/autocomplete.iife.min.js"></script>
 </head>
 <body>
     <div>
