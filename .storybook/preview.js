@@ -20,6 +20,11 @@ export const parameters = {
           id: 'autocomplete-valid',
           selector: '*:not([autocomplete="off--jt-controls"])',
         },
+        {
+          // Do not run color contrast checks on items marked as visually hidden
+          id: 'color-contrast',
+          selector: '*:not(.jt-sr-only)',
+        }
       ],
     },
   },

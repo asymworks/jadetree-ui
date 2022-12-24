@@ -472,12 +472,18 @@ export default class JtAutocomplete extends HTMLElement {
         }
     }
 
-    /* -- Public Methods -- */
+    /** Clear the Input Element */
     clear() {
         this._setValue('');
         requestAnimationFrame(() => {
             this._input.focus();
         });
+    }
+
+    /** @return Item Data matching the current Input (or null) */
+    matchingItem(): JtListItem | null {
+        if (!this._input.value) return null;
+        return this._listbox.itemByValue(this._input.value);
     }
 
     /* -- Constructor -- */
@@ -539,8 +545,10 @@ export default class JtAutocomplete extends HTMLElement {
             this._listboxSource = this.getAttribute('src');
         } else if (this.hasAttribute('list')) {
             this._listboxSource = `#${this.getAttribute('list')}`;
-        } else {
+        } else if (this._input.hasAttribute('list')) {
+            this.setAttribute('list', this._input.getAttribute('list'));
             this._listboxSource = `#${this._input.getAttribute('list')}`;
+            this._input.removeAttribute('list');
         }
 
         this._listbox = new JtListBox(`${this._id}-listbox`, [], this._listBoxOptions());

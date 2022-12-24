@@ -1,6 +1,8 @@
 import '../scss/autocomplete.scss';
 
+import { useEffect } from '@storybook/addons';
 import { Story, Meta } from '@storybook/html';
+
 import JtAutocomplete from '../components/autocomplete';
 import { JtListItem } from '../components/listbox';
 
@@ -50,14 +52,31 @@ export default {
             },
         ],
     },
+    decorators: [
+        (storyFn) => {
+            useEffect(() => {
+                // strangely a fixed height is generated only in Firefox, so 
+                // unset it and add a min-height to show the whole drop-down
+                // list in the page
+                document.querySelectorAll('.innerZoomElementWrapper').forEach((el) => {
+                    const ctnr = el.parentElement;
+                    if (ctnr instanceof HTMLElement) {
+                        ctnr.style.height = 'unset';
+                        ctnr.style.minHeight = '12em';
+                    }
+                });
+            }, []);
+            return storyFn();
+        }
+    ],
 } as Meta;
 
-const InputElement: (args: AutocompleteProps) => string = (args) => {
+const InputElement: (args: AutocompleteProps, id: string) => string = (args, id) => {
     return `<input 
         autocomplete="off"
         type="${ args.type }"
-        id="example"
-        name="example"
+        id="${id}"
+        name="${id}"
         list="example-list"
         ${ args.disabled ? ' disabled' : ''} 
         ${ args.readonly ? ' readonly' : '' }
@@ -86,8 +105,9 @@ const DataList = `<datalist id="example-list">
 
 const Template: Story<AutocompleteProps> = (args) => {
     return `
+<label for="jt__default">Select an Item</label>
 <jt-autocomplete${ args.clearable ? ' clearable' : ''}>
-    ${InputElement(args)}
+    ${InputElement(args, 'jt__default')}
     ${DataList}
 </jt-autocomplete>
 `;
@@ -105,8 +125,9 @@ Default.args = {
 
 export const API: Story<AutocompleteProps> = (args) => {
     return `
+<label for="jt__api">Select an Item</label>
 <jt-autocomplete${ args.clearable ? ' clearable' : ''} src="https://mock-api.jadetree.io/groceries">
-    ${InputElement(args)}
+    ${InputElement(args, 'jt__api')}
 </jt-autocomplete>
 `;
 }
@@ -121,8 +142,9 @@ API.args = {
 
 export const UserTemplate: Story<AutocompleteProps> = (args) => {
     return `
+<label for="jt__tmpl">
 <jt-autocomplete${ args.clearable ? ' clearable' : ''} headerTemplate="header-tmpl" itemTemplate="item-tmpl">
-    ${InputElement(args)}
+    ${InputElement(args, 'jt__tmpl')}
     ${DataList}
 </jt-autocomplete>
 <template id="header-tmpl"><span style="font-weight:bold">Group: </span>\${ item.label }</template>

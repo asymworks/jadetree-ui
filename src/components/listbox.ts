@@ -509,8 +509,7 @@ export default class JtListBox {
     }
 
     /** @private */
-    _renderItem(li: HTMLElement): void {
-        let template: JtListItemTemplate | undefined;
+    _renderData(li: HTMLElement): JtRenderItemData {
         const item: JtRenderItemData = {
             key: li.id || '',
             value: li.dataset.value,
@@ -531,13 +530,22 @@ export default class JtListBox {
         if (role === 'option') {
             item.disabled = boolAttribute(li, 'aria-disabled');
             item.focused = this._focused === li.id;
-            template = this._itemTemplate || defaultItemTemplate;
         } else if (role === 'separator') {
             item.separator = true;
-            template = this._itemTemplate || defaultItemTemplate;
         } else if (li.dataset.empty === 'true') {
             item.creating = this._options.canCreate;
             item.empty = true;
+        }
+        
+        return item;
+    }
+
+    /** @private */
+    _renderItem(li: HTMLElement): void {
+        let template: JtListItemTemplate | undefined;
+        const item = this._renderData(li);
+        const role = li.getAttribute('role')?.toLowerCase();
+        if (role === 'option' || role === 'separator' || li.dataset.empty === 'true') {
             template = this._itemTemplate || defaultItemTemplate;
         } else if (role === 'presentation') {
             template = this._headerTemplate || defaultHeaderTemplate;
@@ -977,8 +985,35 @@ export default class JtListBox {
         return false;
     }
 
+    /** Return an Item by Index or Item Key */
+    item(index: number | string): JtListItemData | null {
+        let item: Element | null = null;
+        if (typeof index === 'number') {
+            const options = Array.from(
+                this._root.querySelectorAll('[role=option]')
+            );
+            if (index > 0 && index < options.length) item = options[index];
+        } else if (typeof index === 'string') {
+            item = this._root.querySelector(`#${index}`);
+        }
+
+        if (item instanceof HTMLLIElement) {
+            return this._renderData(item);
+        }
+        return null;
+    }
+
+    /** Return an Item by Value */
+    itemByValue(value: string): JtListItemData | null {
+        const item: Element = document.querySelector(`[data-value="${value}"]`);
+        if (item instanceof HTMLLIElement) {
+            return this._renderData(item);
+        }
+        return null;
+    }
+
     /**
-     * Remove an Item by Index or Value
+     * Remove an Item by Index or Item Key
      * @param index Index or Item Key where the item will be added. If the
      *  provided value is an item key (string), the new item will be inserted
      *  before the referenced item.  If no index is provided, the item will be
