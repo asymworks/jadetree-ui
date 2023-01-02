@@ -3,7 +3,7 @@
 
 @use 'listbox.scss';
 
-jt-autocomplete {
+jt-select {
     --_jt-control-accent-color: var(--jt-control-accent-color, #08e);
 
     --_jt-control-arrow-size: var(--jt-control-arrow-size, 0.5em);
@@ -17,6 +17,7 @@ jt-autocomplete {
     --_jt-control-disabled-color: var(--jt-control-disabled-color, #aaa);
     --_jt-control-hover-color: var(--jt-control-hover-color, var(--_jt-control-accent-color, #08e));
     --_jt-control-hover-background: var(--jt-control-hover-background, #fff);
+    --_jt-control-arrow-size: var(--jt-control-arrow-size, 0.5rem);
 
     --_jt-focus-color: var(--jt-focus-color, #eee);
     --_jt-focus-background: var(--jt-focus-background, #08f);
@@ -34,13 +35,48 @@ jt-autocomplete {
 
     @include mixins.jt-control;
 
-    button[data-action="close"] {
-        @include mixins.back-button;
-        display: none;
+    :is(& [data-role="control"]) {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        margin: 0;
+        padding: 0;
+        padding-block: 1px;
+        padding-inline-start: 2px;
+        padding-inline-end: calc(var(--_jt-control-arrow-size));
+        flex-grow: 1;
+        min-height: 1.2em;
+        max-width: 100%;
+        font-family: inherit;
+        font-size: inherit;
+        overflow: hidden;
+
+        :is(jt-select[clearable] &) {
+            padding-inline-end: calc(2.1 * var(--_jt-control-arrow-size));
+        }
+
+        &::after {
+            position: absolute;
+            inset-block-start: calc(50% - var(--_jt-control-arrow-size) / 2);
+            inset-inline-end: 0;
+            content: '';
+            width: 0;
+            height: 0;
+
+            @include mixins.arrow-button;
+        }
+
+        &[aria-expanded="true"]::after {
+            transform: rotate(180deg);
+        }
+
+        &[aria-disabled="true"]::after {
+            background-color: var(--_jt-disabled-color);
+        }
     }
 
-    button[data-action="open"] {
-        @include mixins.arrow-button;
+    &[clearable] .jt-control__buttons {
+        inset-inline-end: calc(var(--_jt-control-arrow-size));
     }
 
     button[data-action="clear"] {
@@ -58,11 +94,14 @@ jt-autocomplete {
 
     .jt-popup {
         visibility: hidden;
+        display: flex;
+        flex-direction: column;
         position: absolute;
         inset: auto 0;
         border: 1px solid var(--_jt-control-border);
         border-end-start-radius: var(--_jt-control-border-radius);
         border-end-end-radius: var(--_jt-control-border-radius);
+        background-color: var(--_jt-control-background);
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 20%);
 
         &:last-child {
@@ -73,7 +112,41 @@ jt-autocomplete {
         .jt-listbox {
             max-block-size: var(--_jt-listbox-max-height);
             overflow-block: auto;
+            background-color: var(--_jt-control-background);
         }
+    }
+
+    .jt-select__search {
+        flex-direction: row;
+        align-items: center;
+        justify-content: start;
+
+        [data-action="close"] {
+            display: none;
+            @include mixins.back-button;
+        }
+
+        input {
+            flex: 1 1 auto;
+            min-width: 0;
+            outline: none;
+            border: none;
+
+            :focus {
+                outline: none;
+            }
+        }
+    }
+
+    .jt-popup .jt-select__search {
+        display: none;
+        padding-block: 0.2rem;
+        padding-inline: 0.2rem;
+        border-bottom: 1px solid var(--_jt-control-border);
+    }
+
+    &[searchable] .jt-popup .jt-select__search {
+        display: flex;
     }
 
     &.jt-open .jt-popup {
@@ -87,44 +160,46 @@ jt-autocomplete {
     }
 
     @media not (pointer: fine), (max-width: 640px) {
-        &.jt-open {
-            position: fixed;
-            inset: 0;
-            display: block;
+        .jt-popup {
+            background-color: #00000033;
+            padding: 1.5em;
+            border: none;
 
             button[data-action="close"] {
                 display: block;
                 margin-inline: 0.25rem;
             }
 
-            button[data-action="open"] {
-                display: none;
-            }
-
-            .jt-control,
-            .jt-control:focus-within,
-            .jt-control:hover {
-                border: none;
-                border-bottom: 1px solid var(--_jt-control-border);
-                border-radius: 0;
-                outline: none;
-                padding-block: 0.2em;
-                margin-block-start: 0.2em;
-            }
-
-            .jt-popup {
-                border: none;
-                box-shadow: none;
-
-                .jt-listbox {
-                    max-block-size: 100%;
-                }
+            .jt-listbox {
+                max-block-size: 100%;
+                background-color: var(--_jt-control-background);
+                border-radius: 0.5em;
             }
 
             .jt-listbox__item[role=option],
             .jt-listbox__item[role=presentation] {
                 padding: 0.4em;
             }
+        }
+
+        &[searchable] .jt-popup {
+            background-color: var(--_jt-control-background);
+            padding: 0;
+
+            .jt-listbox {
+                padding: 0;
+                border-radius: 0;
+            }
+        }
+
+        &.jt-open .jt-popup {
+            position: fixed;
+            inset: 0;
+        }
+
+        .jt-select__search {
+            padding-block: 0.5rem;
+            border-bottom: 1px solid var(--_jt-control-border)
         }
     }
 

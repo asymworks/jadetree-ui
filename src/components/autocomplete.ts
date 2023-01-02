@@ -520,16 +520,16 @@ export default class JtAutocomplete extends HTMLElement {
             `<button type='button' data-action='open' id='${this._id}-open' tabindex="-1"><span class='jt-sr-only'>Show Suggestions<span></button>`
         ) as HTMLButtonElement;
         this._btnOpen.addEventListener('click', () => this._onOpenClick());
+
+        this._btnClear = htmlToElement(
+            `<button type='button' data-action='clear' id='${this._id}-clear' tabindex="-1"><span class='jt-sr-only'>Clear Input</span></button>`
+        ) as HTMLButtonElement;
+        this._btnClear.addEventListener('click', () => this.clear());
+
         const btns = document.createElement('div');
         btns.classList.add('jt-control__buttons');
         btns.appendChild(this._btnOpen);
-        if (boolAttribute(this, 'clearable')) {
-            this._btnClear = htmlToElement(
-                `<button type='button' data-action='clear' id='${this._id}-clear' tabindex="-1"><span class='jt-sr-only'>Clear Input</span></button>`
-            ) as HTMLButtonElement;
-            this._btnClear.addEventListener('click', () => this.clear());
-            btns.appendChild(this._btnClear);
-        }
+        btns.appendChild(this._btnClear);
 
         // Create Control
         const control = document.createElement('div');
@@ -650,7 +650,6 @@ export default class JtAutocomplete extends HTMLElement {
 }
 
 // Auto-Register the Web Component in an IIFE
-declare global { const __ROLLUP_IIFE: boolean; }
 if (typeof __ROLLUP_IIFE === 'boolean' && __ROLLUP_IIFE) {
     JtAutocomplete.register();
 }

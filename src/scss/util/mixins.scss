@@ -7,7 +7,8 @@
         border: 1px solid var(--_jt-control-border);
         border-radius: var(--_jt-control-border-radius);
 
-        input {
+        input,
+        :where(& [data-role=control]) {
             flex: 1 0 auto;
             border: none;
             outline: none;
