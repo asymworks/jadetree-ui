@@ -9,6 +9,7 @@ const configs = {
   name: 'JtControls',
   files: [
     'components/autocomplete.js',
+    'components/select.js',
     'index.js',
   ],
   formats: ['es', 'iife'],

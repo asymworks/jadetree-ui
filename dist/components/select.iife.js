@@ -1238,32 +1238,25 @@ var JtControls = (function () {
 	/**
 	 * Jade Tree Autocomplete Text Input Component
 	 */
-	/*
-	 * Allow the autocomplete element to mimic `text`, `search`, `url`, `tel`,
-	 * or `email` `<input>` types.  Although the HTML spec allows `list` to be used
-	 * with other `<input>` types, this control will not.
-	 */
-	const ALLOWED_INPUT_TYPES = ['text', 'search', 'url', 'tel', 'email'];
-	class JtAutocomplete extends HTMLElement {
+	class JtSelect extends HTMLElement {
 	    /* -- Properties -- */
 	    get disabled() {
-	        var _a;
-	        return !!((_a = this._input) === null || _a === void 0 ? void 0 : _a.disabled);
+	        return boolAttribute(this, 'disabled');
 	    }
 	    set disabled(value) {
 	        if (value) {
 	            this.setAttribute('aria-disabled', 'true');
 	            this.setAttribute('disabled', '');
+	            this._control.setAttribute('aria-disabled', 'true');
+	            this._select.setAttribute('disabled', '');
 	        }
 	        else {
 	            this.removeAttribute('aria-disabled');
 	            this.removeAttribute('disabled');
+	            this._control.removeAttribute('aria-disabled');
+	            this._select.removeAttribute('disabled');
 	        }
-	        this._btnOpen.disabled = value;
 	        this._btnClear && (this._btnClear.disabled = value);
-	        if (this._input.disabled != value) {
-	            this._input.disabled = value;
-	        }
 	    }
 	    get groupClass() {
 	        return this.getAttribute('groupclass');
@@ -1334,7 +1327,7 @@ var JtControls = (function () {
 	        return this._listbox.listClassList;
 	    }
 	    get open() {
-	        return boolAttribute(this._input, 'aria-expanded');
+	        return boolAttribute(this._control, 'aria-expanded');
 	    }
 	    set open(value) {
 	        if (value && !this.disabled) {
@@ -1345,7 +1338,7 @@ var JtControls = (function () {
 	        }
 	    }
 	    get readOnly() {
-	        return this._input.readOnly;
+	        return boolAttribute(this, 'readonly');
 	    }
 	    set readOnly(value) {
 	        if (value) {
@@ -1356,22 +1349,30 @@ var JtControls = (function () {
 	            this.removeAttribute('aria-readonly');
 	            this.removeAttribute('readonly');
 	        }
-	        if (this._input.readOnly != value) {
-	            this._input.readOnly = value;
+	    }
+	    get searchable() {
+	        return boolAttribute(this, 'searchable');
+	    }
+	    set searchable(value) {
+	        if (value) {
+	            this.setAttribute('searchable', '');
 	        }
+	        else {
+	            this.removeAttribute('searchable');
+	        }
+	    }
+	    get value() {
+	        return this._listbox.value;
 	    }
 	    /** @private */
 	    _checkListBox() {
-	        if (this._listboxLoaded || !this._listboxSource)
+	        if (this._listboxLoaded)
 	            return;
-	        if (this._listboxSource[0] == '#') {
-	            const list = document.querySelector(this._listboxSource);
-	            if (list instanceof HTMLElement) {
-	                this._setListItems(list);
-	            }
+	        if (!this.hasAttribute('src')) {
+	            this._setListItems(this._select);
 	        }
 	        else {
-	            fetch(this._listboxSource)
+	            fetch(this.getAttribute('src'))
 	                .then((response) => response.json())
 	                .then((response) => this._setListItems(response))
 	                .catch((err) => { throw new Error(err); });
@@ -1379,53 +1380,57 @@ var JtControls = (function () {
 	    }
 	    /** @private */
 	    _closeList() {
+	        this._control.setAttribute('aria-expanded', 'false');
+	        this._listbox && this._listbox.focusClear();
 	        this.classList.remove('jt-open');
-	        this._input.setAttribute('aria-expanded', 'false');
-	        this._btnOpen.setAttribute('aria-expanded', 'false');
-	        this._listbox.focusClear();
-	        this._listbox.filter = '';
+	        if (this.searchable) {
+	            this._control.tabIndex = this._tabIndex;
+	            this._filterInput.tabIndex = -1;
+	            this._filterInput.value = '';
+	            this._listbox.filter = '';
+	        }
 	    }
 	    /** @private */
 	    _controlMutated(list) {
 	        for (const mutation of list) {
-	            switch (mutation.attributeName) {
-	                case 'disabled':
-	                    this.disabled = this._input.disabled;
-	                    break;
-	                case 'readonly':
-	                    this.readOnly = this._input.readOnly;
-	                    break;
-	                case 'list':
-	                    if (this._input.hasAttribute('list')) {
-	                        this._closeList();
-	                        this._listboxLoaded = false;
-	                        this._listboxSource = `#${this._input.getAttribute('list')}`;
-	                        this._input.removeAttribute('list');
+	            if (mutation.type === 'attributes' && mutation.target === this._select) {
+	                /* Change to Disabled Attribute */
+	                switch (mutation.attributeName) {
+	                    case 'disabled':
+	                        this.disabled = this._select.disabled;
 	                        break;
-	                    }
+	                }
+	            }
+	            else if (mutation.attributeName !== 'data-key') {
+	                console.log(mutation);
+	                /* Change to Option List */
+	                if (!this.hasAttribute('src')) {
+	                    this._closeList();
+	                    this._listboxLoaded = false;
+	                }
 	            }
 	        }
 	    }
 	    /** @private */
 	    _focusClear() {
 	        this._listboxFocused = false;
-	        this._textboxFocused = false;
-	        this._input.parentElement.classList.remove('jt-focus');
+	        this._controlFocused = false;
+	        this._control.parentElement.classList.remove('jt-focus');
+	        this._listbox.root.classList.remove('jt-focus');
+	    }
+	    /** @private */
+	    _focusControl() {
+	        this._listboxFocused = false;
+	        this._controlFocused = true;
+	        this._control.parentElement.classList.add('jt-focus');
 	        this._listbox.root.classList.remove('jt-focus');
 	    }
 	    /** @private */
 	    _focusListbox() {
 	        this._listboxFocused = true;
-	        this._textboxFocused = false;
-	        this._input.parentElement.classList.remove('jt-focus');
+	        this._controlFocused = false;
+	        this._control.parentElement.classList.remove('jt-focus');
 	        this._listbox.root.classList.add('jt-focus');
-	    }
-	    /** @private */
-	    _focusTextbox() {
-	        this._listboxFocused = false;
-	        this._textboxFocused = true;
-	        this._input.parentElement.classList.add('jt-focus');
-	        this._listbox.root.classList.remove('jt-focus');
 	    }
 	    /** @private */
 	    _listBoxOptions() {
@@ -1459,12 +1464,15 @@ var JtControls = (function () {
 	        return null;
 	    }
 	    /** @private */
-	    _onClick() {
-	        if (this.disabled || this.readOnly)
-	            return;
-	        this.open = !this.open;
+	    _onControlClick() {
+	        if (!this.open && !this.disabled) {
+	            this._openList();
+	        }
+	        else {
+	            this._closeList();
+	        }
 	    }
-	    /** @private */
+	    /* @private */
 	    _onDocumentClick(ev) {
 	        const tgt = ev.target;
 	        if ((tgt instanceof HTMLElement) && (tgt.closest(`#${this._id}`)) === null) {
@@ -1472,8 +1480,14 @@ var JtControls = (function () {
 	        }
 	    }
 	    /** @private */
+	    _onFilterInput(ev) {
+	        if (ev.isComposing || !this.searchable)
+	            return;
+	        this._listbox.filter = ev.target.value;
+	    }
+	    /** @private */
 	    _onFocusIn() {
-	        this._focusTextbox();
+	        this._focusControl();
 	    }
 	    /** @private */
 	    _onFocusOut() {
@@ -1482,143 +1496,126 @@ var JtControls = (function () {
 	    /** @private */
 	    _onItemClick(ev) {
 	        if (!this.readOnly) {
-	            this._setValue(ev.detail.value);
+	            this._selectValue(ev.detail.value);
 	        }
 	        this._closeList();
 	    }
 	    /** @private */
 	    _onItemFocusIn(ev) {
-	        this._input.setAttribute('aria-activedescendant', ev.target instanceof HTMLElement
+	        this._control.setAttribute('aria-activedescendant', ev.target instanceof HTMLElement
 	            ? ev.target.id || ''
 	            : '');
 	    }
 	    /** @private */
 	    _onItemFocusOut(ev) {
 	        if (!(ev.relatedTarget instanceof HTMLElement)) {
-	            this._input.setAttribute('aria-activedescendant', '');
+	            this._control.setAttribute('aria-activedescendant', '');
 	        }
 	        else {
-	            this._input.setAttribute('aria-activedescendant', ev.relatedTarget.id || '');
+	            this._control.setAttribute('aria-activedescendant', ev.relatedTarget.id || '');
 	        }
 	    }
-	    /** @private */
 	    _onKeyDown(ev) {
-	        let handled = false;
-	        const lbFocus = this._listboxFocused;
-	        switch (ev.key) {
-	            case 'Enter':
-	                if (this._listboxFocused && this._listbox.focusedId) {
-	                    this._setValue(this._listbox.focusedValue);
-	                    this._closeList();
-	                    this._focusTextbox();
-	                    handled = true;
-	                }
-	                break;
-	            case 'Esc':
-	            case 'Escape':
-	                if (this.open) {
-	                    this._closeList();
-	                    this._focusTextbox();
-	                }
-	                else {
-	                    this._setValue('');
-	                }
-	                handled = true;
-	                break;
+	        const { key, altKey, ctrlKey, metaKey, isComposing } = ev;
+	        // Skip IME Composition Events
+	        if (isComposing)
+	            return;
+	        // Check for Open List actions
+	        const openKeys = ['ArrowDown', 'ArrowUp', 'Down', 'Enter', ' ', 'Up'];
+	        if (!this.open && openKeys.includes(key)) {
+	            this._openList();
+	            ev.stopPropagation();
+	            ev.preventDefault();
+	            return;
+	        }
+	        // Handle typeahead/filter character entry
+	        if (key === 'Backspace' ||
+	            key === 'Clear' ||
+	            (key.length === 1 && key !== ' ' && !altKey && !ctrlKey && !metaKey)) {
+	            if (this.searchable) {
+	                if (!this.open)
+	                    this._openList(false);
+	            }
+	            else if (key.length === 1) {
+	                if (!this.open)
+	                    this._openList(false);
+	                this._typeahead(key);
+	            }
+	        }
+	        // Handle Keyboard List Navigation
+	        switch (key) {
 	            case 'ArrowDown':
 	            case 'Down':
-	                this._openList();
-	                this._focusListbox();
-	                if (!ev.altKey && (!this._listbox.focusedId || lbFocus)) {
-	                    this._listbox.focusDown();
-	                }
-	                handled = true;
-	                break;
+	                this._listbox.focusDown();
+	                ev.stopPropagation();
+	                ev.preventDefault();
+	                return;
 	            case 'ArrowUp':
 	            case 'Up':
-	                if (!this._listbox.empty) {
-	                    this._openList();
-	                    this._focusListbox();
-	                    if (!ev.altKey && (!this._listbox.focusedId || lbFocus)) {
-	                        this._listbox.focusUp();
-	                    }
+	                if (altKey) {
+	                    this._selectFocused();
+	                    this._closeList();
 	                }
-	                handled = true;
-	                break;
-	            case 'Tab':
-	                if (this._listbox.focusedId !== '') {
-	                    this._setValue(this._listbox.focusedValue);
+	                else {
+	                    this._listbox.focusUp();
 	                }
-	                this._closeList();
-	                break;
-	        }
-	        if (handled) {
-	            ev.stopPropagation();
-	            ev.preventDefault();
-	        }
-	    }
-	    /** @private */
-	    _onKeyUp(ev) {
-	        const printable = (ev.key.length === 1) && ev.key.match(/\S| /);
-	        let handled = false;
-	        if (printable) {
-	            this._listbox.filter = this._input.value;
-	        }
-	        else if (ev.key === 'Escape' || ev.key === 'Esc' || ev.key == 'Enter') {
-	            return;
-	        }
-	        switch (ev.key) {
-	            case 'Backspace':
-	                this._focusTextbox();
-	                this._listbox.focusClear();
-	                this._listbox.filter = this._input.value;
-	                handled = true;
-	                break;
-	            case 'Left':
-	            case 'ArrowLeft':
-	            case 'Right':
-	            case 'ArrowRight':
-	            case 'Home':
+	                ev.stopPropagation();
+	                ev.preventDefault();
+	                return;
 	            case 'End':
-	                this._focusTextbox();
-	                this._listbox.focusClear();
-	                handled = true;
-	                break;
-	            default:
-	                if (!this._listbox.empty) {
-	                    if (!this.open) {
-	                        this._openList();
-	                    }
-	                    this._listbox.focusValue(this._listbox.filter);
-	                }
-	                handled = true;
-	                break;
-	        }
-	        if (handled) {
-	            ev.stopPropagation();
-	            ev.preventDefault();
+	                this._listbox.focusEnd();
+	                ev.stopPropagation();
+	                ev.preventDefault();
+	                return;
+	            case 'Enter':
+	            case ' ':
+	                if (key === ' ' && this.searchable)
+	                    return;
+	                this._selectFocused();
+	                this._closeList();
+	                ev.stopPropagation();
+	                ev.preventDefault();
+	                return;
+	            case 'Escape':
+	                this._closeList();
+	                ev.stopPropagation();
+	                ev.preventDefault();
+	                return;
+	            case 'Home':
+	                this._listbox.focusHome();
+	                ev.stopPropagation();
+	                ev.preventDefault();
+	                return;
 	        }
 	    }
 	    /** @private */
-	    _onOpenClick() {
+	    _openList(focusItem = false) {
 	        if (this.disabled)
 	            return;
-	        this.open = !this.open;
-	    }
-	    /** @private */
-	    _openList() {
 	        this._checkListBox();
-	        if (!this.open) {
-	            this.classList.add('jt-open');
-	            this._input.setAttribute('aria-expanded', 'true');
-	            this._btnOpen.setAttribute('aria-expanded', 'true');
-	            if (!this.readOnly) {
-	                this._listbox.focusValue(this._input.value);
-	            }
-	            if (document.activeElement !== this._input) {
-	                this._input.focus();
+	        this._control.setAttribute('aria-expanded', 'true');
+	        this.classList.add('jt-open');
+	        (focusItem && this._listbox) && this._listbox.focusSelected();
+	        if (this.searchable) {
+	            if (document.activeElement !== this._filterInput) {
+	                this._control.tabIndex = -1;
+	                this._filterInput.tabIndex = this._tabIndex || 0;
+	                this._filterInput.focus();
 	            }
 	        }
+	    }
+	    /** @private */
+	    _selectFocused() {
+	        this._listbox.focusedValue && this._selectValue(this._listbox.focusedValue);
+	    }
+	    /** @private */
+	    _selectValue(value) {
+	        if (this.disabled)
+	            return;
+	        this._listbox.value = value;
+	        this._update();
+	        this._closeList();
+	        this.dispatchEvent(new CustomEvent('change', { detail: this.value }));
 	    }
 	    /** @private */
 	    _setListItems(items) {
@@ -1629,81 +1626,129 @@ var JtControls = (function () {
 	        this._listbox.root.addEventListener('item:click', (ev) => this._onItemClick(ev));
 	        this._listbox.root.addEventListener('item:focusin', (ev) => this._onItemFocusIn(ev));
 	        this._listbox.root.addEventListener('item:focusout', (ev) => this._onItemFocusOut(ev));
+	        this._updateWidth();
 	    }
 	    /** @private */
-	    _setValue(value) {
-	        if (!this.readOnly) {
-	            this._listbox.filter = value;
-	            this._input.value = value;
-	            this._input.setSelectionRange(value.length, value.length);
-	            this._input.dispatchEvent(new Event('input'));
+	    _sync() {
+	        const selValues = Array.from(this._select.selectedOptions).map((el) => el.value);
+	        const isChanged = (this.value === '' && selValues.length !== 0)
+	            || (this.value !== '' && selValues.length > 0)
+	            || (this.value !== selValues[0]);
+	        if (!isChanged)
+	            return;
+	        if (!this._listbox.value) {
+	            this._select.value = '';
+	            this._select.dispatchEvent(new Event('change'));
+	        }
+	        else if (Array.isArray(this._listbox.value)) {
+	            this._select.querySelectorAll('option').forEach((el) => {
+	                el.selected = el.value && (this._listbox.value.includes(el.value));
+	            });
+	            this._select.dispatchEvent(new Event('change'));
+	        }
+	        else if (this._listbox.value !== selValues[0]) {
+	            this._select.value = this._listbox.value;
+	            this._select.dispatchEvent(new Event('change'));
+	        }
+	    }
+	    /** @private */
+	    _typeahead(char) {
+	        const allSame = (array) => (array.every((i) => i === array[0]));
+	        // Cancel existing typeahead timer
+	        if (typeof this._typeaheadTimer === 'number') {
+	            window.clearTimeout(this._typeaheadTimer);
+	        }
+	        // Set new typeahead timer
+	        this._typeaheadTimer = window.setTimeout(() => {
+	            this._filter = '';
+	        }, this._typeaheadTimeout || 500);
+	        // Update filter and select next item
+	        this._filter += char;
+	        if (this._filter.length > 1 && allSame(this._filter.split(''))) {
+	            // Repeated letters cycle through
+	            this._listbox.focusTypeahead(this._filter[0]);
+	        }
+	        else {
+	            // Match exact string
+	            this._listbox.focusTypeahead(this._filter);
+	        }
+	    }
+	    /** @private */
+	    _update() {
+	        if (!this._listbox.value) {
+	            this._control.innerHTML = `<span class="jt-placeholder">${this.getAttribute('placeholder') || '&nbsp;'}</span>`;
+	            this.classList.add('jt-placeholder-shown');
+	        }
+	        else {
+	            this._control.innerHTML = `<span>${this._listbox.displayText}</span>`;
+	            this.classList.remove('jt-placeholder-shown');
+	        }
+	        this._sync();
+	    }
+	    /** @private */
+	    _updateWidth() {
+	        const sw = this._listbox.root.scrollWidth;
+	        if (sw == 0) {
+	            // Poll every 100ms until the list box has a Client Width
+	            setTimeout(() => this._updateWidth(), 100);
+	        }
+	        else {
+	            this._control.style.width = `${sw}px`;
 	        }
 	    }
 	    /** Clear the Input Element */
 	    clear() {
-	        this._setValue('');
-	        requestAnimationFrame(() => {
-	            this._input.focus();
-	        });
-	    }
-	    /** @return Item Data matching the current Input (or null) */
-	    matchingItem() {
-	        if (!this._input.value)
-	            return null;
-	        return this._listbox.itemByValue(this._input.value);
+	        this._selectValue('');
 	    }
 	    /* -- Constructor -- */
 	    constructor() {
 	        super();
-	        this._id = this.getAttribute('id') || uid('jt-autocomplete');
+	        this._filter = '';
+	        this._typeaheadTimeout = 500;
+	        this._id = this.getAttribute('id') || uid('jt-select');
 	        if (!this.hasAttribute('id'))
 	            this.setAttribute('id', this._id);
-	        this._input = this.querySelector('input');
-	        if (!this._input)
+	        this._select = this.querySelector('select');
+	        if (!this._select)
 	            return;
-	        if (!ALLOWED_INPUT_TYPES.includes(this._input.type || 'text')) {
-	            throw new Error(`JtAutocomplete does not support <input type='${this._input.type}'>`);
-	        }
-	        // https://bugs.chromium.org/p/chromium/issues/detail?id=468153#c164
-	        this._input.setAttribute('autocomplete', 'off--jt-controls');
-	        this._input.setAttribute('role', 'combobox');
-	        this._input.setAttribute('aria-autocomplete', 'list');
-	        this._input.addEventListener('click', () => this._onClick());
-	        this._input.addEventListener('focusin', () => this._onFocusIn());
-	        this._input.addEventListener('focusout', () => this._onFocusOut());
-	        this._input.addEventListener('keydown', (ev) => this._onKeyDown(ev));
-	        this._input.addEventListener('keyup', (ev) => this._onKeyUp(ev));
+	        // Store Tab Index
+	        this._tabIndex = this._select.tabIndex;
+	        // Create Select Control
+	        this._control = document.createElement('div');
+	        this._control.setAttribute('id', `${this._id}-control`);
+	        this._control.setAttribute('role', 'combobox');
+	        this._control.setAttribute('data-role', 'control');
+	        this._control.setAttribute('aria-controls', `${this._id}-listbox`);
+	        this._control.setAttribute('aria-expanded', 'false');
+	        this._control.setAttribute('aria-haspopup', 'listbox');
+	        this._control.setAttribute('tabindex', `${this._tabIndex}`);
+	        this._control.addEventListener('click', () => this._onControlClick());
+	        this._control.addEventListener('focusin', () => this._onFocusIn());
+	        this._control.addEventListener('focusout', () => this._onFocusOut());
+	        this.addEventListener('keydown', (ev) => this._onKeyDown(ev), { capture: true });
 	        // Create buttons
 	        this._btnClose = htmlToElement(`<button type='button' data-action='close' id="${this._id}-close" tabindex="-1"><span class='jt-sr-only'>Close Suggestion List</span></button>`);
 	        this._btnClose.addEventListener('click', () => this._closeList());
-	        this._btnOpen = htmlToElement(`<button type='button' data-action='open' id='${this._id}-open' tabindex="-1"><span class='jt-sr-only'>Show Suggestions<span></button>`);
-	        this._btnOpen.addEventListener('click', () => this._onOpenClick());
 	        this._btnClear = htmlToElement(`<button type='button' data-action='clear' id='${this._id}-clear' tabindex="-1"><span class='jt-sr-only'>Clear Input</span></button>`);
 	        this._btnClear.addEventListener('click', () => this.clear());
 	        const btns = document.createElement('div');
 	        btns.classList.add('jt-control__buttons');
-	        btns.appendChild(this._btnOpen);
 	        btns.appendChild(this._btnClear);
 	        // Create Control
 	        const control = document.createElement('div');
 	        control.classList.add('jt-control');
-	        control.appendChild(this._btnClose);
-	        control.appendChild(this._input);
+	        control.appendChild(this._control);
 	        control.appendChild(btns);
 	        this.appendChild(control);
+	        // Create Search Box
+	        this._filterInput = htmlToElement(`<input id="${this._id}-filter" type="search" tabindex="-1" placeholder="Search Options" />`);
+	        this._filterInput.addEventListener('input', (ev) => this._onFilterInput(ev));
+	        const searchWrapper = document.createElement('div');
+	        searchWrapper.classList.add('jt-select__search');
+	        searchWrapper.appendChild(this._btnClose);
+	        searchWrapper.appendChild(this._filterInput);
 	        // Create Empty Listbox
 	        this._listboxLoaded = false;
-	        if (this.hasAttribute('src')) {
-	            this._listboxSource = this.getAttribute('src');
-	        }
-	        else if (this.hasAttribute('list')) {
-	            this._listboxSource = `#${this.getAttribute('list')}`;
-	        }
-	        else if (this._input.hasAttribute('list')) {
-	            this.setAttribute('list', this._input.getAttribute('list'));
-	            this._listboxSource = `#${this._input.getAttribute('list')}`;
-	            this._input.removeAttribute('list');
-	        }
 	        this._listbox = new JtListBox(`${this._id}-listbox`, [], this._listBoxOptions());
 	        this._listbox.groupClassList.value = this.getAttribute('groupClass');
 	        this._listbox.headerClassList.value = this.getAttribute('headerClass');
@@ -1711,21 +1756,41 @@ var JtControls = (function () {
 	        this._listbox.listClassList.value = this.getAttribute('listClass');
 	        const popup = document.createElement('div');
 	        popup.classList.add('jt-popup');
+	        popup.appendChild(searchWrapper);
 	        popup.appendChild(this._listbox.root);
 	        this.appendChild(popup);
 	        // Initialize State
 	        this.open = false;
-	        this.disabled = this._input.disabled;
-	        this.readOnly = this._input.readOnly;
-	        this.classList.toggle('jt-placeholder-shown', this._input.value == '');
-	        this._input.addEventListener('input', () => {
-	            this.classList.toggle('jt-placeholder-shown', this._input.value == '');
+	        this.disabled = this._select.disabled;
+	        this.classList.toggle('jt-placeholder-shown', this._select.value == '');
+	        this._select.addEventListener('change', () => {
+	            this.classList.toggle('jt-placeholder-shown', this._select.value == '');
 	        });
-	        // Watch for attribute changes on the <input>
+	        // Adopt Label and Hide Source Control
+	        if (this._select instanceof HTMLElement) {
+	            if (document.activeElement === this._select) {
+	                this._control.focus();
+	            }
+	            this._select.style.display = 'none';
+	            if (this._select.id) {
+	                const label = document.querySelector(`[for="${this._select.id}"]`);
+	                if (label instanceof HTMLLabelElement) {
+	                    label.htmlFor = `${this._id}-control`;
+	                    if (!label.id)
+	                        label.id = `${this._id}-label`;
+	                    this._control.setAttribute('aria-labelledby', label.id);
+	                }
+	            }
+	        }
+	        // Watch for attribute changes on the <select>
 	        this._observer = new MutationObserver((list) => this._controlMutated(list));
-	        this._observer.observe(this._input, { attributes: true });
+	        this._observer.observe(this._select, { attributes: true, childList: true, subtree: true });
 	        // Register Click-Away Handler
 	        document.addEventListener('click', (ev) => this._onDocumentClick(ev));
+	        // Load the List Items
+	        this._checkListBox();
+	        this._update();
+	        this._updateWidth();
 	    }
 	    /* -- Web Component Lifecycle Hooks --*/
 	    static get observedAttributes() {
@@ -1776,20 +1841,19 @@ var JtControls = (function () {
 	            case 'src':
 	                this._closeList();
 	                this._listboxLoaded = false;
-	                this._listboxSource = newValue;
 	                break;
 	        }
 	    }
 	    /* -- Web Component Registration Helper -- */
 	    static register() {
-	        customElements.define("jt-autocomplete", JtAutocomplete);
+	        customElements.define("jt-select", JtSelect);
 	    }
 	}
 	// Auto-Register the Web Component in an IIFE
 	if (typeof __ROLLUP_IIFE === 'boolean' && __ROLLUP_IIFE) {
-	    JtAutocomplete.register();
+	    JtSelect.register();
 	}
 
-	return JtAutocomplete;
+	return JtSelect;
 
 })();

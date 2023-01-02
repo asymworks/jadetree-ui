@@ -92,24 +92,6 @@ const InputElement: (args: SelectProps, id: string) => string = (args, id) => {
     </select>`.replace(/\s\s+/g, ' ');
 };
 
-const DataList = `<datalist id="example-list">
-        <option>Apples</option>
-        <option>Asparagus</option>
-        <option disabled>Bananas</option>
-        <option>Bread</option>
-        <option data-role="separator"></option>
-        <option>Cereal</option>
-        <option>Cheese</option>
-        <option>Cream</option>
-        <option>Eggs</option>
-        <optgroup label="Meat">
-            <option>Beef</option>
-            <option>Chicken</option>
-            <option>Lamb</option>
-            <option>Pork</option>
-        </optgroup>
-    </datalist>`;
-
 const Template: Story<SelectProps> = (args) => {
     return `
 <label for="jt__default">Select an Item</label>

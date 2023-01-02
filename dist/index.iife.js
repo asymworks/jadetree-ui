@@ -1,4 +1,4 @@
-/*! JtControls v0.1.2 | (c) 2022 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.1.3 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 (function () {
 	'use strict';
 
@@ -562,9 +562,8 @@
 	        }
 	    }
 	    /** @private */
-	    _renderItem(li) {
+	    _renderData(li) {
 	        var _a;
-	        let template;
 	        const item = {
 	            key: li.id || '',
 	            value: li.dataset.value,
@@ -585,15 +584,23 @@
 	        if (role === 'option') {
 	            item.disabled = boolAttribute(li, 'aria-disabled');
 	            item.focused = this._focused === li.id;
-	            template = this._itemTemplate || defaultItemTemplate;
 	        }
 	        else if (role === 'separator') {
 	            item.separator = true;
-	            template = this._itemTemplate || defaultItemTemplate;
 	        }
 	        else if (li.dataset.empty === 'true') {
 	            item.creating = this._options.canCreate;
 	            item.empty = true;
+	        }
+	        return item;
+	    }
+	    /** @private */
+	    _renderItem(li) {
+	        var _a;
+	        let template;
+	        const item = this._renderData(li);
+	        const role = (_a = li.getAttribute('role')) === null || _a === void 0 ? void 0 : _a.toLowerCase();
+	        if (role === 'option' || role === 'separator' || li.dataset.empty === 'true') {
 	            template = this._itemTemplate || defaultItemTemplate;
 	        }
 	        else if (role === 'presentation') {
@@ -989,8 +996,32 @@
 	        }
 	        return false;
 	    }
+	    /** Return an Item by Index or Item Key */
+	    item(index) {
+	        let item = null;
+	        if (typeof index === 'number') {
+	            const options = Array.from(this._root.querySelectorAll('[role=option]'));
+	            if (index > 0 && index < options.length)
+	                item = options[index];
+	        }
+	        else if (typeof index === 'string') {
+	            item = this._root.querySelector(`#${index}`);
+	        }
+	        if (item instanceof HTMLLIElement) {
+	            return this._renderData(item);
+	        }
+	        return null;
+	    }
+	    /** Return an Item by Value */
+	    itemByValue(value) {
+	        const item = document.querySelector(`[data-value="${value}"]`);
+	        if (item instanceof HTMLLIElement) {
+	            return this._renderData(item);
+	        }
+	        return null;
+	    }
 	    /**
-	     * Remove an Item by Index or Value
+	     * Remove an Item by Index or Item Key
 	     * @param index Index or Item Key where the item will be added. If the
 	     *  provided value is an item key (string), the new item will be inserted
 	     *  before the referenced item.  If no index is provided, the item will be
@@ -1608,12 +1639,18 @@
 	            this._input.dispatchEvent(new Event('input'));
 	        }
 	    }
-	    /* -- Public Methods -- */
+	    /** Clear the Input Element */
 	    clear() {
 	        this._setValue('');
 	        requestAnimationFrame(() => {
 	            this._input.focus();
 	        });
+	    }
+	    /** @return Item Data matching the current Input (or null) */
+	    matchingItem() {
+	        if (!this._input.value)
+	            return null;
+	        return this._listbox.itemByValue(this._input.value);
 	    }
 	    /* -- Constructor -- */
 	    constructor() {
@@ -1641,14 +1678,12 @@
 	        this._btnClose.addEventListener('click', () => this._closeList());
 	        this._btnOpen = htmlToElement(`<button type='button' data-action='open' id='${this._id}-open' tabindex="-1"><span class='jt-sr-only'>Show Suggestions<span></button>`);
 	        this._btnOpen.addEventListener('click', () => this._onOpenClick());
+	        this._btnClear = htmlToElement(`<button type='button' data-action='clear' id='${this._id}-clear' tabindex="-1"><span class='jt-sr-only'>Clear Input</span></button>`);
+	        this._btnClear.addEventListener('click', () => this.clear());
 	        const btns = document.createElement('div');
 	        btns.classList.add('jt-control__buttons');
 	        btns.appendChild(this._btnOpen);
-	        if (boolAttribute(this, 'clearable')) {
-	            this._btnClear = htmlToElement(`<button type='button' data-action='clear' id='${this._id}-clear' tabindex="-1"><span class='jt-sr-only'>Clear Input</span></button>`);
-	            this._btnClear.addEventListener('click', () => this.clear());
-	            btns.appendChild(this._btnClear);
-	        }
+	        btns.appendChild(this._btnClear);
 	        // Create Control
 	        const control = document.createElement('div');
 	        control.classList.add('jt-control');
@@ -1664,8 +1699,10 @@
 	        else if (this.hasAttribute('list')) {
 	            this._listboxSource = `#${this.getAttribute('list')}`;
 	        }
-	        else {
+	        else if (this._input.hasAttribute('list')) {
+	            this.setAttribute('list', this._input.getAttribute('list'));
 	            this._listboxSource = `#${this._input.getAttribute('list')}`;
+	            this._input.removeAttribute('list');
 	        }
 	        this._listbox = new JtListBox(`${this._id}-listbox`, [], this._listBoxOptions());
 	        this._listbox.groupClassList.value = this.getAttribute('groupClass');
@@ -1748,6 +1785,7 @@
 	        customElements.define("jt-autocomplete", JtAutocomplete);
 	    }
 	}
+	// Auto-Register the Web Component in an IIFE
 	if (typeof __ROLLUP_IIFE === 'boolean' && __ROLLUP_IIFE) {
 	    JtAutocomplete.register();
 	}

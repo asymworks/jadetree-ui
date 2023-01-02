@@ -109,6 +109,8 @@ export default class JtListBox {
     /** @private */
     _onPointerLeave(ev: MouseEvent): void;
     /** @private */
+    _renderData(li: HTMLElement): JtRenderItemData;
+    /** @private */
     _renderItem(li: HTMLElement): void;
     /** @private */
     _select(id: string): void;
@@ -195,8 +197,12 @@ export default class JtListBox {
      * found and selected, `false` otherwise.
      */
     focusValue(value: string): boolean;
+    /** Return an Item by Index or Item Key */
+    item(index: number | string): JtListItemData | null;
+    /** Return an Item by Value */
+    itemByValue(value: string): JtListItemData | null;
     /**
-     * Remove an Item by Index or Value
+     * Remove an Item by Index or Item Key
      * @param index Index or Item Key where the item will be added. If the
      *  provided value is an item key (string), the new item will be inserted
      *  before the referenced item.  If no index is provided, the item will be

@@ -2,22 +2,26 @@
  * Jade Tree Autocomplete Text Input Component
  */
 import JtListBox, { JtListBoxOptions, JtListItem, JtListItemTemplate } from './listbox';
-export default class JtAutocomplete extends HTMLElement {
-    _btnOpen: HTMLButtonElement;
+export default class JtSelect extends HTMLElement {
     _btnClear?: HTMLButtonElement;
     _btnClose: HTMLButtonElement;
+    _control: HTMLDivElement;
+    _controlFocused: boolean;
+    _filter: string;
+    _filterInput: HTMLInputElement;
     _headerTemplate: JtListItemTemplate | null;
     _listbox?: JtListBox;
     _listboxFocused: boolean;
     _listboxLoaded: boolean;
-    _listboxSource: string;
-    _input: HTMLInputElement;
     _id: string;
     _itemTemplate: JtListItemTemplate | null;
     _mode: string;
     _observer: MutationObserver;
+    _select: HTMLSelectElement;
     _templateChanging: boolean;
-    _textboxFocused: boolean;
+    _tabIndex: number;
+    _typeaheadTimer?: number;
+    _typeaheadTimeout: number;
     get disabled(): boolean;
     set disabled(value: boolean);
     get groupClass(): string;
@@ -40,6 +44,9 @@ export default class JtAutocomplete extends HTMLElement {
     set open(value: boolean);
     get readOnly(): boolean;
     set readOnly(value: boolean);
+    get searchable(): boolean;
+    set searchable(value: boolean);
+    get value(): string | string[];
     /** @private */
     _checkListBox(): void;
     /** @private */
@@ -49,17 +56,18 @@ export default class JtAutocomplete extends HTMLElement {
     /** @private */
     _focusClear(): void;
     /** @private */
-    _focusListbox(): void;
+    _focusControl(): void;
     /** @private */
-    _focusTextbox(): void;
+    _focusListbox(): void;
     /** @private */
     _listBoxOptions(): JtListBoxOptions;
     /** @private */
     _loadTemplate(template: string): JtListItemTemplate | null;
     /** @private */
-    _onClick(): void;
-    /** @private */
+    _onControlClick(): void;
     _onDocumentClick(ev: Event): void;
+    /** @private */
+    _onFilterInput(ev: InputEvent): void;
     /** @private */
     _onFocusIn(): void;
     /** @private */
@@ -70,22 +78,25 @@ export default class JtAutocomplete extends HTMLElement {
     _onItemFocusIn(ev: FocusEvent): void;
     /** @private */
     _onItemFocusOut(ev: FocusEvent): void;
-    /** @private */
     _onKeyDown(ev: KeyboardEvent): void;
     /** @private */
-    _onKeyUp(ev: KeyboardEvent): void;
+    _openList(focusItem?: boolean): void;
     /** @private */
-    _onOpenClick(): void;
+    _selectFocused(): void;
     /** @private */
-    _openList(): void;
+    _selectValue(value: string): void;
     /** @private */
     _setListItems(items: HTMLElement | JtListItem[]): void;
     /** @private */
-    _setValue(value: string): void;
+    _sync(): void;
+    /** @private */
+    _typeahead(char: string): void;
+    /** @private */
+    _update(): void;
+    /** @private */
+    _updateWidth(): void;
     /** Clear the Input Element */
     clear(): void;
-    /** @return Item Data matching the current Input (or null) */
-    matchingItem(): JtListItem | null;
     constructor();
     static get observedAttributes(): string[];
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
