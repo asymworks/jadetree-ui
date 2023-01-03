@@ -438,7 +438,7 @@ export default class JtSelect extends HTMLElement {
 
     /** @private */
     _selectValue(value: string) {
-        if (this.disabled) return;
+        if (this.disabled || this.readOnly) return;
         this._listbox.value = value;
         this._update();
         this._closeList();

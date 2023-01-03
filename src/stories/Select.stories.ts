@@ -72,7 +72,6 @@ const InputElement: (args: SelectProps, id: string) => string = (args, id) => {
         id="${id}"
         name="${id}"
         ${ args.disabled ? ' disabled' : ''} 
-        ${ args.readonly ? ' readonly' : '' }
     >
         <option>Apples</option>
         <option>Asparagus</option>
@@ -95,7 +94,7 @@ const InputElement: (args: SelectProps, id: string) => string = (args, id) => {
 const Template: Story<SelectProps> = (args) => {
     return `
 <label for="jt__default">Select an Item</label>
-<jt-select${ args.clearable ? ' clearable' : ''}${ args.searchable ? ' searchable' : ''}${ args.placeholder ? ' placeholder="' + args.placeholder + '"' : '' }>
+<jt-select${ args.clearable ? ' clearable' : ''}${ args.searchable ? ' searchable' : ''}${ args.readonly ? ' readonly' : '' }${ args.placeholder ? ' placeholder="' + args.placeholder + '"' : '' }>
     ${InputElement(args, 'jt__default')}
 </jt-autocomplete>
 `;
