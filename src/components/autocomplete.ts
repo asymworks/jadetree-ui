@@ -501,7 +501,13 @@ export default class JtAutocomplete extends HTMLElement {
         }
 
         // https://bugs.chromium.org/p/chromium/issues/detail?id=468153#c164
-        this._input.setAttribute('autocomplete', 'off--jt-controls');
+        // JtAutocomplete will honor an existing 'autocomplete' attribute, but
+        // will otherwise use `off` as the correct value per W3C. For users
+        // primarily on Chrome, the page author should set `autocomplete` to
+        // whatever seems to work at that time for Chrome.
+        if (!this._input.hasAttribute('autocomplete')) {
+            this._input.setAttribute('autocomplete', 'off');
+        }
         this._input.setAttribute('role', 'combobox');
         this._input.setAttribute('aria-autocomplete', 'list');
         this._input.addEventListener('click', () => this._onClick());

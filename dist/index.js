@@ -1,4 +1,4 @@
-/*! JtControls v0.1.3 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.1.5 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 var qinu_minExports = {};
@@ -1660,7 +1660,13 @@ class JtAutocomplete extends HTMLElement {
             throw new Error(`JtAutocomplete does not support <input type='${this._input.type}'>`);
         }
         // https://bugs.chromium.org/p/chromium/issues/detail?id=468153#c164
-        this._input.setAttribute('autocomplete', 'off--jt-controls');
+        // JtAutocomplete will honor an existing 'autocomplete' attribute, but
+        // will otherwise use `off` as the correct value per W3C. For users
+        // primarily on Chrome, the page author should set `autocomplete` to
+        // whatever seems to work at that time for Chrome.
+        if (!this._input.hasAttribute('autocomplete')) {
+            this._input.setAttribute('autocomplete', 'off');
+        }
         this._input.setAttribute('role', 'combobox');
         this._input.setAttribute('aria-autocomplete', 'list');
         this._input.addEventListener('click', () => this._onClick());

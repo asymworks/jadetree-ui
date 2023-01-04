@@ -1,3 +1,4 @@
+import './base.css';
 import '../scss/autocomplete.scss';
 
 import { useEffect } from '@storybook/addons';

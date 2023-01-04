@@ -71,7 +71,7 @@ jt-select {
         }
 
         &[aria-disabled="true"]::after {
-            background-color: var(--_jt-disabled-color);
+            background-color: var(--_jt-control-disabled-color);
         }
     }
 
@@ -112,8 +112,17 @@ jt-select {
 
         .jt-listbox {
             max-block-size: var(--_jt-listbox-max-height);
+            overflow-y: auto;
             overflow-block: auto;
             background-color: var(--_jt-control-background);
+
+            --jt-listbox-start-padding: 1.4em;
+
+            [aria-selected="true"]::before {
+                position: absolute;
+                inset-inline-start: 0.3em;
+                content: '✓';
+            }
         }
     }
 
@@ -172,6 +181,8 @@ jt-select {
             }
 
             .jt-listbox {
+                --jt-listbox-start-padding: 1.4em;
+
                 max-block-size: 100%;
                 background-color: var(--_jt-control-background);
                 border-radius: 0.5em;
@@ -179,7 +190,8 @@ jt-select {
 
             .jt-listbox__item[role=option],
             .jt-listbox__item[role=presentation] {
-                padding: 0.4em;
+                padding: calc(var(--_jt-listbox-padding) + 0.2em);
+                padding-inline-start: var(--_jt-listbox-start-padding);
             }
         }
 

@@ -1,4 +1,4 @@
-/*! JtControls v0.1.3 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.1.5 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 var JtControls = (function () {
 	'use strict';
 
@@ -1610,7 +1610,7 @@ var JtControls = (function () {
 	    }
 	    /** @private */
 	    _selectValue(value) {
-	        if (this.disabled)
+	        if (this.disabled || this.readOnly)
 	            return;
 	        this._listbox.value = value;
 	        this._update();

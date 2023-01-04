@@ -1,3 +1,4 @@
+import './base.css';
 import '../scss/select.scss';
 
 import { useEffect } from '@storybook/addons';

@@ -35,6 +35,20 @@ describe('Autocomplete Component', () => {
             expect(el).toBeInstanceOf(JtAutocomplete);
             expect(within(el).queryByRole('combobox')).not.toBeNull();
         });
+        it('should disable autocomplete on the form if it is unset', () => {
+            document.body.innerHTML = `<jt-autocomplete><input type="text" /></jt-autocomplete>`;
+            const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            expect(el).toBeDefined();
+            expect(el).toBeInstanceOf(JtAutocomplete);
+            expect(within(el).queryByRole('combobox')).toHaveAttribute('autocomplete', 'off');
+        });
+        it('should honor an existing autocomplete attribute', () => {
+            document.body.innerHTML = `<jt-autocomplete><input type="text" autocomplete="chrome-off" /></jt-autocomplete>`;
+            const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            expect(el).toBeDefined();
+            expect(el).toBeInstanceOf(JtAutocomplete);
+            expect(within(el).queryByRole('combobox')).toHaveAttribute('autocomplete', 'chrome-off');
+        });
         it('should default to the enabled state', () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;

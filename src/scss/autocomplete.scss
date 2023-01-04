@@ -34,6 +34,12 @@ jt-autocomplete {
 
     @include mixins.jt-control;
 
+    /* Chrome still shows the drop-down arrow after removal of list attribute */
+    input::-webkit-calendar-picker-indicator {
+        display: none;
+        opacity: 0;
+    }
+
     button[data-action="close"] {
         @include mixins.back-button;
         display: none;
@@ -72,6 +78,7 @@ jt-autocomplete {
 
         .jt-listbox {
             max-block-size: var(--_jt-listbox-max-height);
+            overflow-y: auto;
             overflow-block: auto;
         }
     }

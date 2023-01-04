@@ -18,6 +18,12 @@
 /* Back (Left-Arrow) Button */
 /* Clear Button */
 .jt-listbox {
+  --jt-listbox-padding: 0.2em;
+  --jt-listbox-start-padding: 0.2em;
+  --jt-listbox-group-indent: 1em;
+  --_jt-listbox-padding: var(--jt-listbox-padding, 0.2em);
+  --_jt-listbox-start-padding: var(--jt-listbox-start-padding, 0.2em);
+  --_jt-listbox-group-indent: var(--jt-listbox-group-indent, 1em);
   margin: 0;
   padding: 0;
   list-style-type: none;
@@ -32,7 +38,9 @@
 .jt-listbox__item {
   position: relative;
   display: block;
-  padding: 0.2em;
+  padding: var(--_jt-listbox-padding);
+  -webkit-padding-start: var(--_jt-listbox-start-padding);
+          padding-inline-start: var(--_jt-listbox-start-padding);
   cursor: default;
 }
 .jt-listbox__item[aria-hidden=true], .jt-listbox__item[hidden] {
@@ -62,4 +70,26 @@
   outline-offset: var(--_jt-focus-ring-offset);
   background-color: var(--_jt-focus-background);
   color: var(--_jt-focus-color);
+}
+.jt-listbox__item[aria-selected=true] {
+  background-color: var(--_jt-control-accent-color);
+  color: var(--_jt-control-background);
+}
+.jt-listbox__item[aria-checked=true] {
+  clip: rect(0 0 0 0);
+  -webkit-clip-path: inset(50%);
+          clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.jt-listbox__group .jt-listbox__item:not(.jt-listbox__item--header) {
+  -webkit-padding-start: calc(var(--_jt-listbox-start-padding) + var(--jt-listbox-group-indent));
+          padding-inline-start: calc(var(--_jt-listbox-start-padding) + var(--jt-listbox-group-indent));
+}
+.jt-listbox__group .jt-listbox__item--header {
+  font-weight: bold;
 }

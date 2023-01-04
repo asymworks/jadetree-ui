@@ -1,4 +1,4 @@
-/*! JtControls v0.1.3 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.1.5 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 var qinu_minExports = {};
@@ -1605,7 +1605,7 @@ class JtSelect extends HTMLElement {
     }
     /** @private */
     _selectValue(value) {
-        if (this.disabled)
+        if (this.disabled || this.readOnly)
             return;
         this._listbox.value = value;
         this._update();
