@@ -117,7 +117,10 @@ jt-autocomplete {
   display: inline-block;
   color: var(--_jt-control-color);
   background-color: var(--_jt-control-background);
-  /* Chrome still shows the drop-down arrow after removal of list attribute */
+  /* 
+      Chrome still shows the drop-down arrow after 
+      removal of "list" attribute. Bad Google.
+  */
 }
 jt-autocomplete .jt-control {
   position: relative;
