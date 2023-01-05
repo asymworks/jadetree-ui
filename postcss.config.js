@@ -1,7 +1,8 @@
-module.exports = {
+module.exports = (ctx) => ({
   syntax: 'postcss-scss',
-  plugins: [
-    require('autoprefixer'),
-    require('@csstools/postcss-sass'),
-  ]
-}
+  plugins: {
+    autoprefixer: {},
+    '@csstools/postcss-sass': {},
+    cssnano: ctx.env === 'production' ? {} : false,
+  }
+});

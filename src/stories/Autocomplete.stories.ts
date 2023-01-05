@@ -12,6 +12,7 @@ if (!customElements.get('jt-autocomplete')) {
 }
 
 type AutocompleteProps = {
+    accentColor?: string;
     clearable?: boolean;
     disabled?: boolean;
     placeholder?: string;
@@ -35,6 +36,7 @@ const MOCK_DATA: JtListItem[] = [
 export default {
     title: 'Jade Tree/Autocomplete',
     argTypes: {
+        accentColor: { control: 'color' },
         clearable: { control: 'boolean' },
         disabled: { control: 'boolean' },
         readonly: { control: 'boolean' },
@@ -107,7 +109,7 @@ const DataList = `<datalist id="example-list">
 const Template: Story<AutocompleteProps> = (args) => {
     return `
 <label for="jt__default">Select an Item</label>
-<jt-autocomplete${ args.clearable ? ' clearable' : ''}>
+<jt-autocomplete${ args.clearable ? ' clearable' : ''}${ args.accentColor ? ' style="--jt-accent-color:' + args.accentColor + ';"' : ''}>
     ${InputElement(args, 'jt__default')}
     ${DataList}
 </jt-autocomplete>
@@ -127,7 +129,7 @@ Default.args = {
 export const API: Story<AutocompleteProps> = (args) => {
     return `
 <label for="jt__api">Select an Item</label>
-<jt-autocomplete${ args.clearable ? ' clearable' : ''} src="https://mock-api.jadetree.io/groceries">
+<jt-autocomplete${ args.clearable ? ' clearable' : ''}${ args.accentColor ? ' style="--jt-accent-color:' + args.accentColor + ';"' : ''} src="https://mock-api.jadetree.io/groceries">
     ${InputElement(args, 'jt__api')}
 </jt-autocomplete>
 `;
@@ -144,7 +146,7 @@ API.args = {
 export const UserTemplate: Story<AutocompleteProps> = (args) => {
     return `
 <label for="jt__tmpl">
-<jt-autocomplete${ args.clearable ? ' clearable' : ''} headerTemplate="header-tmpl" itemTemplate="item-tmpl">
+<jt-autocomplete${ args.clearable ? ' clearable' : ''}${ args.accentColor ? ' style="--jt-accent-color:' + args.accentColor + ';"' : ''} headerTemplate="header-tmpl" itemTemplate="item-tmpl">
     ${InputElement(args, 'jt__tmpl')}
     ${DataList}
 </jt-autocomplete>

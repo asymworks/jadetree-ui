@@ -6,7 +6,7 @@
   "types": "./types/index.d.ts",
   "scripts": {
     "build-css-scss": "postcss src/scss/index.scss src/scss/*.scss --base src/scss --dir css --ext css",
-    "build-css-min": "postcss src/scss/index.scss src/scss/*.scss --base src/scss --dir css --ext min.css --use cssnano",
+    "build-css-min": "postcss src/scss/index.scss src/scss/*.scss --base src/scss --dir css --ext min.css --env production",
     "build-css": "npm-run-all -p build-css-scss build-css-min",
     "build-dist": "rollup -c",
     "build-js": "tsc",

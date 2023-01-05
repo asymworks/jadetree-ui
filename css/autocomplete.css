@@ -1,6 +1,6 @@
 /* Base CSS Styles for Jade Tree Components */
 /* Theming Variables */
-:root {
+* {
   --_jt-control-arrow-size: var(--jt-control-arrow-size, 1.2em);
   --_jt-control-border-color: var(--jt-control-border-color, #999);
   --_jt-control-border-radius: var(--jt-control-border-radius, 3px);
