@@ -1,17 +1,25 @@
-@charset "UTF-8";
 /* All Jade Tree UI CSS */ /* Base CSS Styles for Jade Tree Components */
+/* Theming Variables */
 :root {
-  --jt-accent-color: #08e;
-  --jt-control-arrow-size: 1.2em;
-  --jt-control-color: #000;
-  --jt-control-background: #fff;
-  --jt-control-border: #999;
-  --jt-control-border-radius: 3px;
-  --jt-control-border-hover: #555;
-  --jt-control-border-focus: #08f;
-  --jt-control-disabled-color: #aaa;
-  --jt-control-hover-background: var(--jt-accent-color, #08e);
-  --jt-control-hover-color: #fff;
+  --_jt-control-arrow-size: var(--jt-control-arrow-size, 1.2em);
+  --_jt-control-border-color: var(--jt-control-border-color, #999);
+  --_jt-control-border-radius: var(--jt-control-border-radius, 3px);
+  --_jt-control-border-hover-color: var(--jt-control-border-hover-color, #555);
+  --_jt-control-border-focus-color: var(--jt-control-border-focus-color, var(--jt-accent-color, #08e));
+  --_jt-control-background: var(--jt-control-background, #fff);
+  --_jt-control-color: var(--jt-control-color, #000);
+  --_jt-control-disabled-background: var(--jt-control-disabled-background, var(--_jt-control-background));
+  --_jt-control-disabled-color: var(--jt-control-disabled-color, #aaa);
+  --_jt-control-hover-background: var(--jt-control-selection-background, var(--jt-accent-color, #08e));
+  --_jt-control-hover-color: var(--jt-control-selection-color, var(--_jt-control-background));
+  --_jt-control-selection-background: var(--jt-control-selection-background, var(--jt-accent-color, #08e));
+  --_jt-control-selection-color: var(--jt-control-selection-color, var(--_jt-control-background));
+  --_jt-focus-color: var(--jt-focus-color, #eee);
+  --_jt-focus-background: var(--jt-focus-background, #08f);
+  --_jt-focus-ring-color: var(--jt-focus-ring-color, #888);
+  --_jt-focus-ring-style: var(--jt-focus-ring-style, dotted);
+  --_jt-focus-ring-width: var(--jt-focus-ring-style, 1px);
+  --_jt-focus-ring-offset: var(--jt-focus-ring-offset, -2px);
 }
 
 /* Synthetic Control with Control Buttons */
@@ -19,16 +27,21 @@
 /* Back (Left-Arrow) Button */
 /* Clear Button */
 .jt-listbox {
-  --jt-listbox-padding: 0.2em;
-  --jt-listbox-start-padding: 0.2em;
-  --jt-listbox-group-indent: 1em;
+  /* Listbox Layout Variables */
   --_jt-listbox-padding: var(--jt-listbox-padding, 0.2em);
   --_jt-listbox-start-padding: var(--jt-listbox-start-padding, 0.2em);
   --_jt-listbox-group-indent: var(--jt-listbox-group-indent, 1em);
+  --_jt-listbox-separator-margin: var(--jt-listbox-separator-margin, 0em);
+  --_jt-listbox-max-height: var(--jt-listbox-max-height, 8em);
+  /* Listbox Layout */
   margin: 0;
   padding: 0;
   list-style-type: none;
+  max-block-size: var(--_jt-listbox-max-height);
+  overflow-y: auto;
   overflow-block: auto;
+  /* Listbox Theming */
+  background-color: var(--_jt-control-background);
 }
 
 .jt-listbox ul {
@@ -37,7 +50,7 @@
   list-style-type: none;
 }
 
-.jt-listbox__item {
+.jt-listbox .jt-listbox__item {
   position: relative;
   display: block;
   padding: var(--_jt-listbox-padding);
@@ -46,11 +59,23 @@
   cursor: default;
 }
 
-.jt-listbox__item[aria-hidden=true], .jt-listbox__item[hidden] {
+.jt-listbox .jt-listbox__item[aria-hidden=true], .jt-listbox .jt-listbox__item[hidden] {
   display: none;
 }
 
+.jt-listbox .jt-listbox__item[aria-checked=true] {
+  clip: rect(0 0 0 0);
+  -webkit-clip-path: inset(50%);
+          clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
 .jt-listbox__item[aria-disabled=true] {
+  background-color: var(--_jt-control-disabled-background);
   color: var(--_jt-control-disabled-color);
 }
 
@@ -69,7 +94,7 @@
 }
 
 .jt-listbox__item.jt-focused {
-  outline: var(--_jt-control-disabled-color) var(--_jt-focus-ring-style) var(--_jt-focus-ring-width);
+  outline: var(--_jt-focus-ring-color) var(--_jt-focus-ring-style) var(--_jt-focus-ring-width);
   outline-offset: var(--_jt-focus-ring-offset);
 }
 
@@ -81,24 +106,13 @@
 }
 
 .jt-listbox__item[aria-selected=true] {
-  background-color: var(--_jt-control-accent-color);
-  color: var(--_jt-control-background);
-}
-
-.jt-listbox__item[aria-checked=true] {
-  clip: rect(0 0 0 0);
-  -webkit-clip-path: inset(50%);
-          clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
+  background-color: var(--_jt-control-selection-background);
+  color: var(--_jt-control-selection-color);
 }
 
 .jt-listbox__group .jt-listbox__item:not(.jt-listbox__item--header) {
-  -webkit-padding-start: calc(var(--_jt-listbox-start-padding) + var(--jt-listbox-group-indent));
-          padding-inline-start: calc(var(--_jt-listbox-start-padding) + var(--jt-listbox-group-indent));
+  -webkit-padding-start: calc(var(--_jt-listbox-start-padding) + var(--_jt-listbox-group-indent));
+          padding-inline-start: calc(var(--_jt-listbox-start-padding) + var(--_jt-listbox-group-indent));
 }
 
 .jt-listbox__group .jt-listbox__item--header {
@@ -106,24 +120,6 @@
 }
 
 jt-autocomplete {
-  --_jt-control-accent-color: var(--jt-control-accent-color, #08e);
-  --_jt-control-arrow-size: var(--jt-control-arrow-size, 0.5em);
-  --_jt-control-color: var(--jt-control-color, #111);
-  --_jt-control-background: var(--jt-control-background, #fff);
-  --_jt-control-border: var(--jt-control-border, #999);
-  --_jt-control-border-radius: var(--jt-control-border-radius, 3px);
-  --_jt-control-border-hover: var(--jt-control-border-hover, #555);
-  --_jt-control-border-focus: var(--jt-control-border-focus, var(--_jt-control-accent-color, #08e));
-  --_jt-control-disabled-color: var(--jt-control-disabled-color, #aaa);
-  --_jt-control-hover-color: var(--jt-control-hover-color, var(--_jt-control-accent-color, #08e));
-  --_jt-control-hover-background: var(--jt-control-hover-background, #fff);
-  --_jt-focus-color: var(--jt-focus-color, #eee);
-  --_jt-focus-background: var(--jt-focus-background, #08f);
-  --_jt-focus-ring-color: var(--jt-focus-ring-color, #eee);
-  --_jt-focus-ring-style: var(--jt-focus-ring-style, dotted);
-  --_jt-focus-ring-width: var(--jt-focus-ring-style, 1px);
-  --_jt-focus-ring-offset: var(--jt-focus-ring-offset, -2px);
-  --_jt-listbox-max-height: var(--jt-listbox-max-height, 8em);
   position: relative;
   display: inline-block;
   color: var(--_jt-control-color);
@@ -137,7 +133,7 @@ jt-autocomplete .jt-control {
   position: relative;
   display: flex;
   align-items: center;
-  border: 1px solid var(--_jt-control-border);
+  border: 1px solid var(--_jt-control-border-color);
   border-radius: var(--_jt-control-border-radius);
 }
 jt-autocomplete .jt-control input, :where(jt-autocomplete .jt-control [data-role=control]) {
@@ -162,11 +158,11 @@ jt-autocomplete .jt-control__buttons {
           padding-inline-end: 0.2em;
 }
 jt-autocomplete .jt-control:hover {
-  border: 1px solid var(--_jt-control-border-hover);
+  border: 1px solid var(--_jt-control-border-hover-color);
 }
 jt-autocomplete .jt-control.jt-focus {
   border-color: transparent;
-  outline: 2px solid var(--_jt-control-border-focus);
+  outline: 2px solid var(--_jt-control-border-focus-color);
   outline-offset: -1px;
 }
 jt-autocomplete input::-webkit-calendar-picker-indicator {
@@ -224,7 +220,7 @@ jt-autocomplete .jt-popup {
   visibility: hidden;
   position: absolute;
   inset: auto 0;
-  border: 1px solid var(--_jt-control-border);
+  border: 1px solid var(--_jt-control-border-color);
   border-end-start-radius: var(--_jt-control-border-radius);
   border-end-end-radius: var(--_jt-control-border-radius);
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
@@ -232,11 +228,6 @@ jt-autocomplete .jt-popup {
 jt-autocomplete .jt-popup:last-child {
   border-end-start-radius: var(--_jt-control-border-radius);
   border-end-end-radius: var(--_jt-control-border-radius);
-}
-jt-autocomplete .jt-popup .jt-listbox {
-  max-block-size: var(--_jt-listbox-max-height);
-  overflow-y: auto;
-  overflow-block: auto;
 }
 jt-autocomplete.jt-open .jt-popup {
   visibility: visible;
@@ -264,7 +255,7 @@ jt-autocomplete.jt-open .jt-control {
   jt-autocomplete.jt-open .jt-control:focus-within,
   jt-autocomplete.jt-open .jt-control:hover {
     border: none;
-    border-bottom: 1px solid var(--_jt-control-border);
+    border-bottom: 1px solid var(--_jt-control-border-color);
     border-radius: 0;
     outline: none;
     padding-block: 0.2em;
@@ -290,18 +281,27 @@ jt-autocomplete .jt-listbox__item mark {
 }
 
 /* Base CSS Styles for Jade Tree Components */
+/* Theming Variables */
 :root {
-  --jt-accent-color: #08e;
-  --jt-control-arrow-size: 1.2em;
-  --jt-control-color: #000;
-  --jt-control-background: #fff;
-  --jt-control-border: #999;
-  --jt-control-border-radius: 3px;
-  --jt-control-border-hover: #555;
-  --jt-control-border-focus: #08f;
-  --jt-control-disabled-color: #aaa;
-  --jt-control-hover-background: var(--jt-accent-color, #08e);
-  --jt-control-hover-color: #fff;
+  --_jt-control-arrow-size: var(--jt-control-arrow-size, 1.2em);
+  --_jt-control-border-color: var(--jt-control-border-color, #999);
+  --_jt-control-border-radius: var(--jt-control-border-radius, 3px);
+  --_jt-control-border-hover-color: var(--jt-control-border-hover-color, #555);
+  --_jt-control-border-focus-color: var(--jt-control-border-focus-color, var(--jt-accent-color, #08e));
+  --_jt-control-background: var(--jt-control-background, #fff);
+  --_jt-control-color: var(--jt-control-color, #000);
+  --_jt-control-disabled-background: var(--jt-control-disabled-background, var(--_jt-control-background));
+  --_jt-control-disabled-color: var(--jt-control-disabled-color, #aaa);
+  --_jt-control-hover-background: var(--jt-control-selection-background, var(--jt-accent-color, #08e));
+  --_jt-control-hover-color: var(--jt-control-selection-color, var(--_jt-control-background));
+  --_jt-control-selection-background: var(--jt-control-selection-background, var(--jt-accent-color, #08e));
+  --_jt-control-selection-color: var(--jt-control-selection-color, var(--_jt-control-background));
+  --_jt-focus-color: var(--jt-focus-color, #eee);
+  --_jt-focus-background: var(--jt-focus-background, #08f);
+  --_jt-focus-ring-color: var(--jt-focus-ring-color, #888);
+  --_jt-focus-ring-style: var(--jt-focus-ring-style, dotted);
+  --_jt-focus-ring-width: var(--jt-focus-ring-style, 1px);
+  --_jt-focus-ring-offset: var(--jt-focus-ring-offset, -2px);
 }
 
 /* Synthetic Control with Control Buttons */
@@ -309,16 +309,21 @@ jt-autocomplete .jt-listbox__item mark {
 /* Back (Left-Arrow) Button */
 /* Clear Button */
 .jt-listbox {
-  --jt-listbox-padding: 0.2em;
-  --jt-listbox-start-padding: 0.2em;
-  --jt-listbox-group-indent: 1em;
+  /* Listbox Layout Variables */
   --_jt-listbox-padding: var(--jt-listbox-padding, 0.2em);
   --_jt-listbox-start-padding: var(--jt-listbox-start-padding, 0.2em);
   --_jt-listbox-group-indent: var(--jt-listbox-group-indent, 1em);
+  --_jt-listbox-separator-margin: var(--jt-listbox-separator-margin, 0em);
+  --_jt-listbox-max-height: var(--jt-listbox-max-height, 8em);
+  /* Listbox Layout */
   margin: 0;
   padding: 0;
   list-style-type: none;
+  max-block-size: var(--_jt-listbox-max-height);
+  overflow-y: auto;
   overflow-block: auto;
+  /* Listbox Theming */
+  background-color: var(--_jt-control-background);
 }
 
 .jt-listbox ul {
@@ -327,7 +332,7 @@ jt-autocomplete .jt-listbox__item mark {
   list-style-type: none;
 }
 
-.jt-listbox__item {
+.jt-listbox .jt-listbox__item {
   position: relative;
   display: block;
   padding: var(--_jt-listbox-padding);
@@ -336,11 +341,23 @@ jt-autocomplete .jt-listbox__item mark {
   cursor: default;
 }
 
-.jt-listbox__item[aria-hidden=true], .jt-listbox__item[hidden] {
+.jt-listbox .jt-listbox__item[aria-hidden=true], .jt-listbox .jt-listbox__item[hidden] {
   display: none;
 }
 
+.jt-listbox .jt-listbox__item[aria-checked=true] {
+  clip: rect(0 0 0 0);
+  -webkit-clip-path: inset(50%);
+          clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
 .jt-listbox__item[aria-disabled=true] {
+  background-color: var(--_jt-control-disabled-background);
   color: var(--_jt-control-disabled-color);
 }
 
@@ -359,7 +376,7 @@ jt-autocomplete .jt-listbox__item mark {
 }
 
 .jt-listbox__item.jt-focused {
-  outline: var(--_jt-control-disabled-color) var(--_jt-focus-ring-style) var(--_jt-focus-ring-width);
+  outline: var(--_jt-focus-ring-color) var(--_jt-focus-ring-style) var(--_jt-focus-ring-width);
   outline-offset: var(--_jt-focus-ring-offset);
 }
 
@@ -371,24 +388,13 @@ jt-autocomplete .jt-listbox__item mark {
 }
 
 .jt-listbox__item[aria-selected=true] {
-  background-color: var(--_jt-control-accent-color);
-  color: var(--_jt-control-background);
-}
-
-.jt-listbox__item[aria-checked=true] {
-  clip: rect(0 0 0 0);
-  -webkit-clip-path: inset(50%);
-          clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
+  background-color: var(--_jt-control-selection-background);
+  color: var(--_jt-control-selection-color);
 }
 
 .jt-listbox__group .jt-listbox__item:not(.jt-listbox__item--header) {
-  -webkit-padding-start: calc(var(--_jt-listbox-start-padding) + var(--jt-listbox-group-indent));
-          padding-inline-start: calc(var(--_jt-listbox-start-padding) + var(--jt-listbox-group-indent));
+  -webkit-padding-start: calc(var(--_jt-listbox-start-padding) + var(--_jt-listbox-group-indent));
+          padding-inline-start: calc(var(--_jt-listbox-start-padding) + var(--_jt-listbox-group-indent));
 }
 
 .jt-listbox__group .jt-listbox__item--header {
@@ -396,25 +402,6 @@ jt-autocomplete .jt-listbox__item mark {
 }
 
 jt-select {
-  --_jt-control-accent-color: var(--jt-control-accent-color, #08e);
-  --_jt-control-arrow-size: var(--jt-control-arrow-size, 0.5em);
-  --_jt-control-color: var(--jt-control-color, #111);
-  --_jt-control-background: var(--jt-control-background, #fff);
-  --_jt-control-border: var(--jt-control-border, #999);
-  --_jt-control-border-radius: var(--jt-control-border-radius, 3px);
-  --_jt-control-border-hover: var(--jt-control-border-hover, #555);
-  --_jt-control-border-focus: var(--jt-control-border-focus, var(--_jt-control-accent-color, #08e));
-  --_jt-control-disabled-color: var(--jt-control-disabled-color, #aaa);
-  --_jt-control-hover-color: var(--jt-control-hover-color, var(--_jt-control-accent-color, #08e));
-  --_jt-control-hover-background: var(--jt-control-hover-background, #fff);
-  --_jt-control-arrow-size: var(--jt-control-arrow-size, 0.5rem);
-  --_jt-focus-color: var(--jt-focus-color, #eee);
-  --_jt-focus-background: var(--jt-focus-background, #08f);
-  --_jt-focus-ring-color: var(--jt-focus-ring-color, #eee);
-  --_jt-focus-ring-style: var(--jt-focus-ring-style, dotted);
-  --_jt-focus-ring-width: var(--jt-focus-ring-style, 1px);
-  --_jt-focus-ring-offset: var(--jt-focus-ring-offset, -2px);
-  --_jt-listbox-max-height: var(--jt-listbox-max-height, 8em);
   position: relative;
   display: inline-block;
   color: var(--_jt-control-color);
@@ -424,7 +411,7 @@ jt-select .jt-control {
   position: relative;
   display: flex;
   align-items: center;
-  border: 1px solid var(--_jt-control-border);
+  border: 1px solid var(--_jt-control-border-color);
   border-radius: var(--_jt-control-border-radius);
 }
 jt-select .jt-control input, :where(jt-select .jt-control [data-role=control]) {
@@ -449,11 +436,11 @@ jt-select .jt-control__buttons {
           padding-inline-end: 0.2em;
 }
 jt-select .jt-control:hover {
-  border: 1px solid var(--_jt-control-border-hover);
+  border: 1px solid var(--_jt-control-border-hover-color);
 }
 jt-select .jt-control.jt-focus {
   border-color: transparent;
-  outline: 2px solid var(--_jt-control-border-focus);
+  outline: 2px solid var(--_jt-control-border-focus-color);
   outline-offset: -1px;
 }
 :is(jt-select [data-role=control]) {
@@ -531,7 +518,7 @@ jt-select .jt-popup {
   flex-direction: column;
   position: absolute;
   inset: auto 0;
-  border: 1px solid var(--_jt-control-border);
+  border: 1px solid var(--_jt-control-border-color);
   border-end-start-radius: var(--_jt-control-border-radius);
   border-end-end-radius: var(--_jt-control-border-radius);
   background-color: var(--_jt-control-background);
@@ -546,12 +533,18 @@ jt-select .jt-popup .jt-listbox {
   overflow-y: auto;
   overflow-block: auto;
   background-color: var(--_jt-control-background);
-  --jt-listbox-start-padding: 1.4em;
+  --_jt-listbox-start-padding: var(--jt-listbox-start-padding, 1.4em);
 }
 jt-select .jt-popup .jt-listbox [aria-selected=true]::before {
   position: absolute;
-  inset-inline-start: 0.3em;
-  content: "✓";
+  inset-block-start: 0.3em;
+  inset-inline-start: 0.25em;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  content: "";
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' stroke='currentColor' class='w-5 h-5'%3E%3Cpath fill-rule='evenodd' d='M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z' clip-rule='evenodd' /%3E%3C/svg%3E");
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' stroke='currentColor' class='w-5 h-5'%3E%3Cpath fill-rule='evenodd' d='M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z' clip-rule='evenodd' /%3E%3C/svg%3E");
 }
 jt-select .jt-select__search {
   flex-direction: row;
@@ -586,7 +579,7 @@ jt-select .jt-popup .jt-select__search {
   display: none;
   padding-block: 0.2rem;
   padding-inline: 0.2rem;
-  border-bottom: 1px solid var(--_jt-control-border);
+  border-bottom: 1px solid var(--_jt-control-border-color);
 }
 jt-select[searchable] .jt-popup .jt-select__search {
   display: flex;

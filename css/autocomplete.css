@@ -1,16 +1,25 @@
 /* Base CSS Styles for Jade Tree Components */
+/* Theming Variables */
 :root {
-  --jt-accent-color: #08e;
-  --jt-control-arrow-size: 1.2em;
-  --jt-control-color: #000;
-  --jt-control-background: #fff;
-  --jt-control-border: #999;
-  --jt-control-border-radius: 3px;
-  --jt-control-border-hover: #555;
-  --jt-control-border-focus: #08f;
-  --jt-control-disabled-color: #aaa;
-  --jt-control-hover-background: var(--jt-accent-color, #08e);
-  --jt-control-hover-color: #fff;
+  --_jt-control-arrow-size: var(--jt-control-arrow-size, 1.2em);
+  --_jt-control-border-color: var(--jt-control-border-color, #999);
+  --_jt-control-border-radius: var(--jt-control-border-radius, 3px);
+  --_jt-control-border-hover-color: var(--jt-control-border-hover-color, #555);
+  --_jt-control-border-focus-color: var(--jt-control-border-focus-color, var(--jt-accent-color, #08e));
+  --_jt-control-background: var(--jt-control-background, #fff);
+  --_jt-control-color: var(--jt-control-color, #000);
+  --_jt-control-disabled-background: var(--jt-control-disabled-background, var(--_jt-control-background));
+  --_jt-control-disabled-color: var(--jt-control-disabled-color, #aaa);
+  --_jt-control-hover-background: var(--jt-control-selection-background, var(--jt-accent-color, #08e));
+  --_jt-control-hover-color: var(--jt-control-selection-color, var(--_jt-control-background));
+  --_jt-control-selection-background: var(--jt-control-selection-background, var(--jt-accent-color, #08e));
+  --_jt-control-selection-color: var(--jt-control-selection-color, var(--_jt-control-background));
+  --_jt-focus-color: var(--jt-focus-color, #eee);
+  --_jt-focus-background: var(--jt-focus-background, #08f);
+  --_jt-focus-ring-color: var(--jt-focus-ring-color, #888);
+  --_jt-focus-ring-style: var(--jt-focus-ring-style, dotted);
+  --_jt-focus-ring-width: var(--jt-focus-ring-style, 1px);
+  --_jt-focus-ring-offset: var(--jt-focus-ring-offset, -2px);
 }
 
 /* Synthetic Control with Control Buttons */
@@ -18,24 +27,28 @@
 /* Back (Left-Arrow) Button */
 /* Clear Button */
 .jt-listbox {
-  --jt-listbox-padding: 0.2em;
-  --jt-listbox-start-padding: 0.2em;
-  --jt-listbox-group-indent: 1em;
+  /* Listbox Layout Variables */
   --_jt-listbox-padding: var(--jt-listbox-padding, 0.2em);
   --_jt-listbox-start-padding: var(--jt-listbox-start-padding, 0.2em);
   --_jt-listbox-group-indent: var(--jt-listbox-group-indent, 1em);
+  --_jt-listbox-separator-margin: var(--jt-listbox-separator-margin, 0em);
+  --_jt-listbox-max-height: var(--jt-listbox-max-height, 8em);
+  /* Listbox Layout */
   margin: 0;
   padding: 0;
   list-style-type: none;
+  max-block-size: var(--_jt-listbox-max-height);
+  overflow-y: auto;
   overflow-block: auto;
+  /* Listbox Theming */
+  background-color: var(--_jt-control-background);
 }
 .jt-listbox ul {
   margin: 0;
   padding: 0;
   list-style-type: none;
 }
-
-.jt-listbox__item {
+.jt-listbox .jt-listbox__item {
   position: relative;
   display: block;
   padding: var(--_jt-listbox-padding);
@@ -43,10 +56,22 @@
           padding-inline-start: var(--_jt-listbox-start-padding);
   cursor: default;
 }
-.jt-listbox__item[aria-hidden=true], .jt-listbox__item[hidden] {
+.jt-listbox .jt-listbox__item[aria-hidden=true], .jt-listbox .jt-listbox__item[hidden] {
   display: none;
 }
+.jt-listbox .jt-listbox__item[aria-checked=true] {
+  clip: rect(0 0 0 0);
+  -webkit-clip-path: inset(50%);
+          clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
 .jt-listbox__item[aria-disabled=true] {
+  background-color: var(--_jt-control-disabled-background);
   color: var(--_jt-control-disabled-color);
 }
 .jt-listbox__item[role=separator] {
@@ -62,7 +87,7 @@
   color: var(--_jt-control-hover-color);
 }
 .jt-listbox__item.jt-focused {
-  outline: var(--_jt-control-disabled-color) var(--_jt-focus-ring-style) var(--_jt-focus-ring-width);
+  outline: var(--_jt-focus-ring-color) var(--_jt-focus-ring-style) var(--_jt-focus-ring-width);
   outline-offset: var(--_jt-focus-ring-offset);
 }
 .jt-focus .jt-listbox__item.jt-focused {
@@ -72,47 +97,19 @@
   color: var(--_jt-focus-color);
 }
 .jt-listbox__item[aria-selected=true] {
-  background-color: var(--_jt-control-accent-color);
-  color: var(--_jt-control-background);
-}
-.jt-listbox__item[aria-checked=true] {
-  clip: rect(0 0 0 0);
-  -webkit-clip-path: inset(50%);
-          clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
+  background-color: var(--_jt-control-selection-background);
+  color: var(--_jt-control-selection-color);
 }
 
 .jt-listbox__group .jt-listbox__item:not(.jt-listbox__item--header) {
-  -webkit-padding-start: calc(var(--_jt-listbox-start-padding) + var(--jt-listbox-group-indent));
-          padding-inline-start: calc(var(--_jt-listbox-start-padding) + var(--jt-listbox-group-indent));
+  -webkit-padding-start: calc(var(--_jt-listbox-start-padding) + var(--_jt-listbox-group-indent));
+          padding-inline-start: calc(var(--_jt-listbox-start-padding) + var(--_jt-listbox-group-indent));
 }
 .jt-listbox__group .jt-listbox__item--header {
   font-weight: bold;
 }
 
 jt-autocomplete {
-  --_jt-control-accent-color: var(--jt-control-accent-color, #08e);
-  --_jt-control-arrow-size: var(--jt-control-arrow-size, 0.5em);
-  --_jt-control-color: var(--jt-control-color, #111);
-  --_jt-control-background: var(--jt-control-background, #fff);
-  --_jt-control-border: var(--jt-control-border, #999);
-  --_jt-control-border-radius: var(--jt-control-border-radius, 3px);
-  --_jt-control-border-hover: var(--jt-control-border-hover, #555);
-  --_jt-control-border-focus: var(--jt-control-border-focus, var(--_jt-control-accent-color, #08e));
-  --_jt-control-disabled-color: var(--jt-control-disabled-color, #aaa);
-  --_jt-control-hover-color: var(--jt-control-hover-color, var(--_jt-control-accent-color, #08e));
-  --_jt-control-hover-background: var(--jt-control-hover-background, #fff);
-  --_jt-focus-color: var(--jt-focus-color, #eee);
-  --_jt-focus-background: var(--jt-focus-background, #08f);
-  --_jt-focus-ring-color: var(--jt-focus-ring-color, #eee);
-  --_jt-focus-ring-style: var(--jt-focus-ring-style, dotted);
-  --_jt-focus-ring-width: var(--jt-focus-ring-style, 1px);
-  --_jt-focus-ring-offset: var(--jt-focus-ring-offset, -2px);
-  --_jt-listbox-max-height: var(--jt-listbox-max-height, 8em);
   position: relative;
   display: inline-block;
   color: var(--_jt-control-color);
@@ -126,7 +123,7 @@ jt-autocomplete .jt-control {
   position: relative;
   display: flex;
   align-items: center;
-  border: 1px solid var(--_jt-control-border);
+  border: 1px solid var(--_jt-control-border-color);
   border-radius: var(--_jt-control-border-radius);
 }
 jt-autocomplete .jt-control input, :where(jt-autocomplete .jt-control [data-role=control]) {
@@ -151,11 +148,11 @@ jt-autocomplete .jt-control__buttons {
           padding-inline-end: 0.2em;
 }
 jt-autocomplete .jt-control:hover {
-  border: 1px solid var(--_jt-control-border-hover);
+  border: 1px solid var(--_jt-control-border-hover-color);
 }
 jt-autocomplete .jt-control.jt-focus {
   border-color: transparent;
-  outline: 2px solid var(--_jt-control-border-focus);
+  outline: 2px solid var(--_jt-control-border-focus-color);
   outline-offset: -1px;
 }
 jt-autocomplete input::-webkit-calendar-picker-indicator {
@@ -213,7 +210,7 @@ jt-autocomplete .jt-popup {
   visibility: hidden;
   position: absolute;
   inset: auto 0;
-  border: 1px solid var(--_jt-control-border);
+  border: 1px solid var(--_jt-control-border-color);
   border-end-start-radius: var(--_jt-control-border-radius);
   border-end-end-radius: var(--_jt-control-border-radius);
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
@@ -221,11 +218,6 @@ jt-autocomplete .jt-popup {
 jt-autocomplete .jt-popup:last-child {
   border-end-start-radius: var(--_jt-control-border-radius);
   border-end-end-radius: var(--_jt-control-border-radius);
-}
-jt-autocomplete .jt-popup .jt-listbox {
-  max-block-size: var(--_jt-listbox-max-height);
-  overflow-y: auto;
-  overflow-block: auto;
 }
 jt-autocomplete.jt-open .jt-popup {
   visibility: visible;
@@ -253,7 +245,7 @@ jt-autocomplete.jt-open .jt-control {
   jt-autocomplete.jt-open .jt-control:focus-within,
   jt-autocomplete.jt-open .jt-control:hover {
     border: none;
-    border-bottom: 1px solid var(--_jt-control-border);
+    border-bottom: 1px solid var(--_jt-control-border-color);
     border-radius: 0;
     outline: none;
     padding-block: 0.2em;
