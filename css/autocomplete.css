@@ -55,6 +55,14 @@
   -webkit-padding-start: var(--_jt-listbox-start-padding);
           padding-inline-start: var(--_jt-listbox-start-padding);
   cursor: default;
+  /* Increase Padding for small screens */
+}
+@media not (pointer: fine), (max-width: 640px) {
+  .jt-listbox .jt-listbox__item {
+    padding: calc(var(--_jt-listbox-padding) + 0.2em);
+    -webkit-padding-start: calc(var(--_jt-listbox-start-padding) + 0.2em);
+            padding-inline-start: calc(var(--_jt-listbox-start-padding) + 0.2em);
+  }
 }
 .jt-listbox .jt-listbox__item[aria-hidden=true], .jt-listbox .jt-listbox__item[hidden] {
   display: none;
@@ -257,11 +265,8 @@ jt-autocomplete.jt-open .jt-control {
     box-shadow: none;
   }
   jt-autocomplete.jt-open .jt-popup .jt-listbox {
-    max-block-size: 100%;
-  }
-  jt-autocomplete.jt-open .jt-listbox__item[role=option],
-  jt-autocomplete.jt-open .jt-listbox__item[role=presentation] {
-    padding: 0.4em;
+    max-block-size: 100vh;
+    max-block-size: -webkit-fill-available;
   }
 }
 jt-autocomplete .jt-listbox__item mark {

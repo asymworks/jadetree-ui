@@ -57,8 +57,16 @@
   -webkit-padding-start: var(--_jt-listbox-start-padding);
           padding-inline-start: var(--_jt-listbox-start-padding);
   cursor: default;
+  /* Increase Padding for small screens */
 }
 
+@media not (pointer: fine), (max-width: 640px) {
+  .jt-listbox .jt-listbox__item {
+    padding: calc(var(--_jt-listbox-padding) + 0.2em);
+    -webkit-padding-start: calc(var(--_jt-listbox-start-padding) + 0.2em);
+            padding-inline-start: calc(var(--_jt-listbox-start-padding) + 0.2em);
+  }
+}
 .jt-listbox .jt-listbox__item[aria-hidden=true], .jt-listbox .jt-listbox__item[hidden] {
   display: none;
 }
@@ -267,11 +275,8 @@ jt-autocomplete.jt-open .jt-control {
     box-shadow: none;
   }
   jt-autocomplete.jt-open .jt-popup .jt-listbox {
-    max-block-size: 100%;
-  }
-  jt-autocomplete.jt-open .jt-listbox__item[role=option],
-  jt-autocomplete.jt-open .jt-listbox__item[role=presentation] {
-    padding: 0.4em;
+    max-block-size: 100vh;
+    max-block-size: -webkit-fill-available;
   }
 }
 jt-autocomplete .jt-listbox__item mark {
@@ -339,8 +344,16 @@ jt-autocomplete .jt-listbox__item mark {
   -webkit-padding-start: var(--_jt-listbox-start-padding);
           padding-inline-start: var(--_jt-listbox-start-padding);
   cursor: default;
+  /* Increase Padding for small screens */
 }
 
+@media not (pointer: fine), (max-width: 640px) {
+  .jt-listbox .jt-listbox__item {
+    padding: calc(var(--_jt-listbox-padding) + 0.2em);
+    -webkit-padding-start: calc(var(--_jt-listbox-start-padding) + 0.2em);
+            padding-inline-start: calc(var(--_jt-listbox-start-padding) + 0.2em);
+  }
+}
 .jt-listbox .jt-listbox__item[aria-hidden=true], .jt-listbox .jt-listbox__item[hidden] {
   display: none;
 }
@@ -609,12 +622,6 @@ jt-select.jt-open .jt-control {
     background-color: var(--_jt-control-background);
     border-radius: 0.5em;
   }
-  jt-select .jt-popup .jt-listbox__item[role=option],
-  jt-select .jt-popup .jt-listbox__item[role=presentation] {
-    padding: calc(var(--_jt-listbox-padding) + 0.2em);
-    -webkit-padding-start: var(--_jt-listbox-start-padding);
-            padding-inline-start: var(--_jt-listbox-start-padding);
-  }
   jt-select[searchable] .jt-popup {
     background-color: var(--_jt-control-background);
     padding: 0;
@@ -636,4 +643,16 @@ jt-select .jt-listbox__item mark {
   background-color: inherit;
   color: inherit;
   font-weight: bold;
+}
+
+/* Visually Hide Content */
+.jt-sr-only {
+  clip: rect(0 0 0 0);
+  -webkit-clip-path: inset(50%);
+          clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 }

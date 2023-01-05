@@ -1,4 +1,4 @@
-/*! JtControls v0.1.9 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.1.10 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 var qinu_minExports = {};
@@ -1504,6 +1504,11 @@ class JtAutocomplete extends HTMLElement {
             case 'Enter':
                 if (this._listboxFocused && this._listbox.focusedId) {
                     this._setValue(this._listbox.focusedValue);
+                    this._closeList();
+                    this._focusTextbox();
+                    handled = true;
+                }
+                else if (this.open) {
                     this._closeList();
                     this._focusTextbox();
                     handled = true;
