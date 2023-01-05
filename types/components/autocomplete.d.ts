@@ -13,6 +13,7 @@ export default class JtAutocomplete extends HTMLElement {
     _listboxSource: string;
     _input: HTMLInputElement;
     _id: string;
+    _initialHeight?: number;
     _itemTemplate: JtListItemTemplate | null;
     _mode: string;
     _observer: MutationObserver;

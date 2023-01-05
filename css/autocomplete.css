@@ -32,12 +32,10 @@
   --_jt-listbox-start-padding: var(--jt-listbox-start-padding, 0.2em);
   --_jt-listbox-group-indent: var(--jt-listbox-group-indent, 1em);
   --_jt-listbox-separator-margin: var(--jt-listbox-separator-margin, 0em);
-  --_jt-listbox-max-height: var(--jt-listbox-max-height, 8em);
   /* Listbox Layout */
   margin: 0;
   padding: 0;
   list-style-type: none;
-  max-block-size: var(--_jt-listbox-max-height);
   overflow-y: auto;
   overflow-block: auto;
   /* Listbox Theming */
@@ -118,14 +116,12 @@
 }
 
 jt-autocomplete {
+  --_jt-listbox-max-height: var(--jt-listbox-max-height, 8em);
   position: relative;
   display: inline-block;
   color: var(--_jt-control-color);
   background-color: var(--_jt-control-background);
-  /* 
-      Chrome still shows the drop-down arrow after 
-      removal of "list" attribute. Bad Google.
-  */
+  /* Hide the DataList Arrow on Chrome and Safari */
 }
 jt-autocomplete .jt-control {
   position: relative;
@@ -163,7 +159,8 @@ jt-autocomplete .jt-control.jt-focus {
   outline: 2px solid var(--_jt-control-border-focus-color);
   outline-offset: -1px;
 }
-jt-autocomplete input::-webkit-calendar-picker-indicator {
+jt-autocomplete input::-webkit-calendar-picker-indicator,
+jt-autocomplete input::-webkit-list-button {
   display: none;
   opacity: 0;
 }
@@ -222,6 +219,9 @@ jt-autocomplete .jt-popup {
   border-end-start-radius: var(--_jt-control-border-radius);
   border-end-end-radius: var(--_jt-control-border-radius);
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+  max-block-size: var(--_jt-listbox-max-height);
+  overflow-y: scroll;
+  overflow-block: scroll;
 }
 jt-autocomplete .jt-popup:last-child {
   border-end-start-radius: var(--_jt-control-border-radius);
@@ -240,7 +240,8 @@ jt-autocomplete.jt-open .jt-control {
   jt-autocomplete.jt-open {
     position: fixed;
     inset: 0;
-    display: block;
+    display: flex;
+    flex-direction: column;
   }
   jt-autocomplete.jt-open button[data-action=close] {
     display: block;
@@ -252,6 +253,7 @@ jt-autocomplete.jt-open .jt-control {
   jt-autocomplete.jt-open .jt-control,
   jt-autocomplete.jt-open .jt-control:focus-within,
   jt-autocomplete.jt-open .jt-control:hover {
+    flex: none;
     border: none;
     border-bottom: 1px solid var(--_jt-control-border-color);
     border-radius: 0;
@@ -261,12 +263,12 @@ jt-autocomplete.jt-open .jt-control {
             margin-block-start: 0.2em;
   }
   jt-autocomplete.jt-open .jt-popup {
+    flex: 1;
     border: none;
     box-shadow: none;
-  }
-  jt-autocomplete.jt-open .jt-popup .jt-listbox {
-    max-block-size: 100vh;
-    max-block-size: -webkit-fill-available;
+    position: relative;
+    max-block-size: unset;
+    background-color: var(--_jt-control-background);
   }
 }
 jt-autocomplete .jt-listbox__item mark {

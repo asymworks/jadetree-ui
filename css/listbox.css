@@ -32,12 +32,10 @@
   --_jt-listbox-start-padding: var(--jt-listbox-start-padding, 0.2em);
   --_jt-listbox-group-indent: var(--jt-listbox-group-indent, 1em);
   --_jt-listbox-separator-margin: var(--jt-listbox-separator-margin, 0em);
-  --_jt-listbox-max-height: var(--jt-listbox-max-height, 8em);
   /* Listbox Layout */
   margin: 0;
   padding: 0;
   list-style-type: none;
-  max-block-size: var(--_jt-listbox-max-height);
   overflow-y: auto;
   overflow-block: auto;
   /* Listbox Theming */

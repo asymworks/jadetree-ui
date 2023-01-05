@@ -1,4 +1,4 @@
-/*! JtControls v0.1.10 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.1.12 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 var JtControls = (function () {
 	'use strict';
 
@@ -1396,7 +1396,7 @@ var JtControls = (function () {
 	                    this.readOnly = this._input.readOnly;
 	                    break;
 	                case 'list':
-	                    if (this._input.hasAttribute('list')) {
+	                    if (this._input.hasAttribute('list') && this._input.getAttribute('list')) {
 	                        this._closeList();
 	                        this._listboxLoaded = false;
 	                        this._listboxSource = `#${this._input.getAttribute('list')}`;
@@ -1713,6 +1713,7 @@ var JtControls = (function () {
 	        else if (this._input.hasAttribute('list')) {
 	            this.setAttribute('list', this._input.getAttribute('list'));
 	            this._listboxSource = `#${this._input.getAttribute('list')}`;
+	            this._input.setAttribute('list', '');
 	            this._input.removeAttribute('list');
 	        }
 	        this._listbox = new JtListBox(`${this._id}-listbox`, [], this._listBoxOptions());
