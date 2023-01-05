@@ -1,28 +1,4 @@
-/* Base CSS Styles for Jade Tree Components */
-/* Theming Variables */
-* {
-  --_jt-control-arrow-size: var(--jt-control-arrow-size, 1.2em);
-  --_jt-control-border-color: var(--jt-control-border-color, #999);
-  --_jt-control-border-radius: var(--jt-control-border-radius, 3px);
-  --_jt-control-border-hover-color: var(--jt-control-border-hover-color, #555);
-  --_jt-control-border-focus-color: var(--jt-control-border-focus-color, var(--jt-accent-color, #08e));
-  --_jt-control-background: var(--jt-control-background, #fff);
-  --_jt-control-color: var(--jt-control-color, #000);
-  --_jt-control-disabled-background: var(--jt-control-disabled-background, var(--_jt-control-background));
-  --_jt-control-disabled-color: var(--jt-control-disabled-color, #aaa);
-  --_jt-control-hover-background: var(--jt-control-selection-background, var(--jt-accent-color, #08e));
-  --_jt-control-hover-color: var(--jt-control-selection-color, var(--_jt-control-background));
-  --_jt-control-selection-background: var(--jt-control-selection-background, var(--jt-accent-color, #08e));
-  --_jt-control-selection-color: var(--jt-control-selection-color, var(--_jt-control-background));
-  --_jt-focus-color: var(--jt-focus-color, #eee);
-  --_jt-focus-background: var(--jt-focus-background, #08f);
-  --_jt-focus-ring-color: var(--jt-focus-ring-color, #888);
-  --_jt-focus-ring-style: var(--jt-focus-ring-style, dotted);
-  --_jt-focus-ring-width: var(--jt-focus-ring-style, 1px);
-  --_jt-focus-ring-offset: var(--jt-focus-ring-offset, -2px);
-}
-
-/* Synthetic Control with Control Buttons */
+/* Base CSS Styles for Jade Tree Components */ /* Synthetic Control with Control Buttons */
 /* Arrow Button that points down or up if aria-expanded is true */
 /* Back (Left-Arrow) Button */
 /* Clear Button */
@@ -121,6 +97,25 @@ jt-select {
   display: inline-block;
   color: var(--_jt-control-color);
   background-color: var(--_jt-control-background);
+  --_jt-control-arrow-size: var(--jt-control-arrow-size, 1.2em);
+  --_jt-control-border-color: var(--jt-control-border-color, #999);
+  --_jt-control-border-radius: var(--jt-control-border-radius, 3px);
+  --_jt-control-border-hover-color: var(--jt-control-border-hover-color, #555);
+  --_jt-control-border-focus-color: var(--jt-control-border-focus-color, var(--jt-accent-color, #08e));
+  --_jt-control-background: var(--jt-control-background, #fff);
+  --_jt-control-color: var(--jt-control-color, #000);
+  --_jt-control-disabled-background: var(--jt-control-disabled-background, var(--_jt-control-background));
+  --_jt-control-disabled-color: var(--jt-control-disabled-color, #aaa);
+  --_jt-control-hover-background: var(--jt-control-selection-background, var(--jt-accent-color, #08e));
+  --_jt-control-hover-color: var(--jt-control-selection-color, var(--_jt-control-background));
+  --_jt-control-selection-background: var(--jt-control-selection-background, var(--jt-accent-color, #08e));
+  --_jt-control-selection-color: var(--jt-control-selection-color, var(--_jt-control-background));
+  --_jt-focus-color: var(--jt-focus-color, #eee);
+  --_jt-focus-background: var(--jt-focus-background, #08f);
+  --_jt-focus-ring-color: var(--jt-focus-ring-color, #888);
+  --_jt-focus-ring-style: var(--jt-focus-ring-style, dotted);
+  --_jt-focus-ring-width: var(--jt-focus-ring-style, 1px);
+  --_jt-focus-ring-offset: var(--jt-focus-ring-offset, -2px);
 }
 jt-select .jt-control {
   position: relative;
@@ -150,13 +145,12 @@ jt-select .jt-control__buttons {
   -webkit-padding-end: 0.2em;
           padding-inline-end: 0.2em;
 }
-jt-select .jt-control:hover {
+:where(jt-select .jt-control:hover) {
   border: 1px solid var(--_jt-control-border-hover-color);
 }
-jt-select .jt-control.jt-focus {
-  border-color: transparent;
+:where(jt-select .jt-control.jt-focus, jt-select .jt-control.jt-focus:hover) {
+  border-color: var(--_jt-control-border-color);
   outline: 2px solid var(--_jt-control-border-focus-color);
-  outline-offset: -1px;
 }
 :is(jt-select [data-role=control]) {
   position: relative;
@@ -233,6 +227,8 @@ jt-select .jt-popup {
   flex-direction: column;
   position: absolute;
   border: 1px solid var(--_jt-control-border-color);
+  -webkit-border-before: none;
+          border-block-start: none;
   border-end-start-radius: var(--_jt-control-border-radius);
   border-end-end-radius: var(--_jt-control-border-radius);
   background-color: var(--_jt-control-background);
@@ -302,12 +298,6 @@ jt-select[searchable] .jt-popup .jt-select__search {
 }
 jt-select.jt-open .jt-popup {
   visibility: visible;
-}
-jt-select.jt-open .jt-control {
-  -webkit-border-after: none;
-          border-block-end: none;
-  border-end-start-radius: 0;
-  border-end-end-radius: 0;
 }
 @media not (pointer: fine), (max-width: 640px) {
   jt-select .jt-popup {

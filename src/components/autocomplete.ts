@@ -300,20 +300,19 @@ export default class JtAutocomplete extends HTMLElement {
 
     /** @private */
     _onItemFocusIn(ev: FocusEvent) {
-        this._input.setAttribute(
-            'aria-activedescendant',
-            ev.target instanceof HTMLElement
-                ? ev.target.id || ''
-                : '',
-        );
+        if (ev.target instanceof HTMLElement && ev.target.id !== '') {
+            this._input.setAttribute('aria-activedescendant', ev.target.id);
+        } else {
+            this._input.removeAttribute('aria-activedescendant');
+        }
     }
 
     /** @private */
     _onItemFocusOut(ev: FocusEvent) {
-        if (!(ev.relatedTarget instanceof HTMLElement)) {
-            this._input.setAttribute('aria-activedescendant', '');
+        if (!(ev.relatedTarget instanceof HTMLElement) || ev.relatedTarget.id === '') {
+            this._input.removeAttribute('aria-activedescendant');
         } else {
-            this._input.setAttribute('aria-activedescendant', ev.relatedTarget.id || '');
+            this._input.setAttribute('aria-activedescendant', ev.relatedTarget.id);
         }
     }
 
@@ -447,7 +446,9 @@ export default class JtAutocomplete extends HTMLElement {
             this._input.setAttribute('aria-expanded', 'true');
             this._btnOpen.setAttribute('aria-expanded', 'true');
             if (!this.readOnly) {
-                this._listbox.focusValue(this._input.value);
+                if (!this._listbox.focusValue(this._input.value)) {
+                    this.querySelector('.jt-popup').scrollTop = 0;
+                }
             }
             if (document.activeElement !== this._input) {
                 this._input.focus();

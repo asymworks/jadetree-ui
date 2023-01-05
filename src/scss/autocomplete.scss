@@ -47,6 +47,7 @@ jt-autocomplete {
         position: absolute;
         inset: auto 0;
         border: 1px solid var(--_jt-control-border-color);
+        border-block-start: none;
         border-end-start-radius: var(--_jt-control-border-radius);
         border-end-end-radius: var(--_jt-control-border-radius);
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 20%);
@@ -62,12 +63,6 @@ jt-autocomplete {
 
     &.jt-open .jt-popup {
         visibility: visible;
-    }
-
-    &.jt-open .jt-control {
-        border-block-end: none;
-        border-end-start-radius: 0;
-        border-end-end-radius: 0;
     }
 
     @media not (pointer: fine), (max-width: 640px) {

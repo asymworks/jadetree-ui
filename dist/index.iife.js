@@ -1,4 +1,4 @@
-/*! JtControls v0.1.12 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.1.14 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 (function () {
 	'use strict';
 
@@ -258,11 +258,7 @@
 	            return;
 	        const hlEl = this._root.querySelector(`#${this._focused}`);
 	        if (hlEl) {
-	            const bounds = this._root.getBoundingClientRect();
-	            const { top, bottom } = hlEl.getBoundingClientRect();
-	            if (top < bounds.top || bottom > bounds.bottom) {
-	                hlEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-	            }
+	            hlEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 	        }
 	    }
 	    /** @private */
@@ -1488,17 +1484,20 @@
 	    }
 	    /** @private */
 	    _onItemFocusIn(ev) {
-	        this._input.setAttribute('aria-activedescendant', ev.target instanceof HTMLElement
-	            ? ev.target.id || ''
-	            : '');
+	        if (ev.target instanceof HTMLElement && ev.target.id !== '') {
+	            this._input.setAttribute('aria-activedescendant', ev.target.id);
+	        }
+	        else {
+	            this._input.removeAttribute('aria-activedescendant');
+	        }
 	    }
 	    /** @private */
 	    _onItemFocusOut(ev) {
-	        if (!(ev.relatedTarget instanceof HTMLElement)) {
-	            this._input.setAttribute('aria-activedescendant', '');
+	        if (!(ev.relatedTarget instanceof HTMLElement) || ev.relatedTarget.id === '') {
+	            this._input.removeAttribute('aria-activedescendant');
 	        }
 	        else {
-	            this._input.setAttribute('aria-activedescendant', ev.relatedTarget.id || '');
+	            this._input.setAttribute('aria-activedescendant', ev.relatedTarget.id);
 	        }
 	    }
 	    /** @private */
@@ -1618,7 +1617,9 @@
 	            this._input.setAttribute('aria-expanded', 'true');
 	            this._btnOpen.setAttribute('aria-expanded', 'true');
 	            if (!this.readOnly) {
-	                this._listbox.focusValue(this._input.value);
+	                if (!this._listbox.focusValue(this._input.value)) {
+	                    this.querySelector('.jt-popup').scrollTop = 0;
+	                }
 	            }
 	            if (document.activeElement !== this._input) {
 	                this._input.focus();

@@ -1,4 +1,4 @@
-/*! JtControls v0.1.12 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.1.14 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 var JtControls = (function () {
 	'use strict';
 
@@ -258,11 +258,7 @@ var JtControls = (function () {
 	            return;
 	        const hlEl = this._root.querySelector(`#${this._focused}`);
 	        if (hlEl) {
-	            const bounds = this._root.getBoundingClientRect();
-	            const { top, bottom } = hlEl.getBoundingClientRect();
-	            if (top < bounds.top || bottom > bounds.bottom) {
-	                hlEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-	            }
+	            hlEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 	        }
 	    }
 	    /** @private */

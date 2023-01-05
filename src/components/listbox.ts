@@ -133,11 +133,7 @@ export default class JtListBox {
         if (!this._focused) return;
         const hlEl = this._root.querySelector(`#${this._focused}`);
         if (hlEl) {
-            const bounds = this._root.getBoundingClientRect();
-            const { top, bottom } = hlEl.getBoundingClientRect();
-            if (top < bounds.top || bottom > bounds.bottom) {
-                hlEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
+            hlEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     }
 

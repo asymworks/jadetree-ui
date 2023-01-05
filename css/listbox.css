@@ -1,28 +1,4 @@
-/* Base CSS Styles for Jade Tree Components */
-/* Theming Variables */
-* {
-  --_jt-control-arrow-size: var(--jt-control-arrow-size, 1.2em);
-  --_jt-control-border-color: var(--jt-control-border-color, #999);
-  --_jt-control-border-radius: var(--jt-control-border-radius, 3px);
-  --_jt-control-border-hover-color: var(--jt-control-border-hover-color, #555);
-  --_jt-control-border-focus-color: var(--jt-control-border-focus-color, var(--jt-accent-color, #08e));
-  --_jt-control-background: var(--jt-control-background, #fff);
-  --_jt-control-color: var(--jt-control-color, #000);
-  --_jt-control-disabled-background: var(--jt-control-disabled-background, var(--_jt-control-background));
-  --_jt-control-disabled-color: var(--jt-control-disabled-color, #aaa);
-  --_jt-control-hover-background: var(--jt-control-selection-background, var(--jt-accent-color, #08e));
-  --_jt-control-hover-color: var(--jt-control-selection-color, var(--_jt-control-background));
-  --_jt-control-selection-background: var(--jt-control-selection-background, var(--jt-accent-color, #08e));
-  --_jt-control-selection-color: var(--jt-control-selection-color, var(--_jt-control-background));
-  --_jt-focus-color: var(--jt-focus-color, #eee);
-  --_jt-focus-background: var(--jt-focus-background, #08f);
-  --_jt-focus-ring-color: var(--jt-focus-ring-color, #888);
-  --_jt-focus-ring-style: var(--jt-focus-ring-style, dotted);
-  --_jt-focus-ring-width: var(--jt-focus-ring-style, 1px);
-  --_jt-focus-ring-offset: var(--jt-focus-ring-offset, -2px);
-}
-
-/* Synthetic Control with Control Buttons */
+/* Base CSS Styles for Jade Tree Components */ /* Synthetic Control with Control Buttons */
 /* Arrow Button that points down or up if aria-expanded is true */
 /* Back (Left-Arrow) Button */
 /* Clear Button */
