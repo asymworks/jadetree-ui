@@ -104,6 +104,14 @@ const DataList = `<datalist id="example-list">
             <option>Lamb</option>
             <option>Pork</option>
         </optgroup>
+        <option>Flour</option>
+        <option>Granola</option>
+        <option>Ham</option>
+        <option>Ice Cream</option>
+        <option>Jam</option>
+        <option>KitKat</option>
+        <option>Lemons</option>
+        <option>Limes</option>
     </datalist>`;
 
 const Template: Story<AutocompleteProps> = (args) => {

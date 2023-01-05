@@ -4,6 +4,8 @@
 @use 'listbox.scss';
 
 jt-select {
+    --_jt-listbox-max-height: var(--jt-listbox-max-height, 8em);
+
     position: relative;
     display: inline-block;
     color: var(--_jt-control-color);
@@ -74,12 +76,17 @@ jt-select {
         display: flex;
         flex-direction: column;
         position: absolute;
-        inset: auto 0;
         border: 1px solid var(--_jt-control-border-color);
         border-end-start-radius: var(--_jt-control-border-radius);
         border-end-end-radius: var(--_jt-control-border-radius);
         background-color: var(--_jt-control-background);
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 20%);
+        width: 100%;
+        box-sizing: border-box;
+        max-block-size: var(--_jt-listbox-max-height);
+        overflow-y: auto;
+        overflow-block: auto;
+        background-color: var(--_jt-control-background);
 
         &:last-child {
             border-end-start-radius: var(--_jt-control-border-radius);
@@ -87,11 +94,6 @@ jt-select {
         }
 
         .jt-listbox {
-            max-block-size: var(--_jt-listbox-max-height);
-            overflow-y: auto;
-            overflow-block: auto;
-            background-color: var(--_jt-control-background);
-
             --_jt-listbox-start-padding: var(--jt-listbox-start-padding, 1.4em);
 
             [aria-selected="true"]::before {

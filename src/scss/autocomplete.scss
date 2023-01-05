@@ -4,6 +4,8 @@
 @use 'listbox.scss';
 
 jt-autocomplete {
+    --_jt-listbox-max-height: var(--jt-listbox-max-height, 8em);
+
     position: relative;
     display: inline-block;
     color: var(--_jt-control-color);
@@ -11,11 +13,9 @@ jt-autocomplete {
 
     @include mixins.jt-control;
 
-    /* 
-        Chrome still shows the drop-down arrow after 
-        removal of "list" attribute. Bad Google.
-    */
-    input::-webkit-calendar-picker-indicator {
+    /* Hide the DataList Arrow on Chrome and Safari */
+    input::-webkit-calendar-picker-indicator,
+    input::-webkit-list-button {
         display: none;
         opacity: 0;
     }
@@ -50,6 +50,9 @@ jt-autocomplete {
         border-end-start-radius: var(--_jt-control-border-radius);
         border-end-end-radius: var(--_jt-control-border-radius);
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 20%);
+        max-block-size: var(--_jt-listbox-max-height);
+        overflow-y: scroll;
+        overflow-block: scroll;
 
         &:last-child {
             border-end-start-radius: var(--_jt-control-border-radius);
@@ -71,7 +74,8 @@ jt-autocomplete {
         &.jt-open {
             position: fixed;
             inset: 0;
-            display: block;
+            display: flex;
+            flex-direction: column;
 
             button[data-action="close"] {
                 display: block;
@@ -85,6 +89,7 @@ jt-autocomplete {
             .jt-control,
             .jt-control:focus-within,
             .jt-control:hover {
+                flex: none;
                 border: none;
                 border-bottom: 1px solid var(--_jt-control-border-color);
                 border-radius: 0;
@@ -94,13 +99,12 @@ jt-autocomplete {
             }
 
             .jt-popup {
+                flex: 1;
                 border: none;
                 box-shadow: none;
-
-                .jt-listbox {
-                    max-block-size: 100vh;
-                    max-block-size: -webkit-fill-available;
-                }
+                position: relative;
+                max-block-size: unset;
+                background-color: var(--_jt-control-background);
             }
         }
     }

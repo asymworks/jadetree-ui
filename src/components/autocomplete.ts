@@ -25,6 +25,7 @@ export default class JtAutocomplete extends HTMLElement {
     _listboxSource: string;
     _input: HTMLInputElement;
     _id: string;
+    _initialHeight?: number;
     _itemTemplate: JtListItemTemplate | null;
     _mode: string;
     _observer: MutationObserver;
@@ -196,7 +197,7 @@ export default class JtAutocomplete extends HTMLElement {
                     this.readOnly = this._input.readOnly;
                     break;
                 case 'list':
-                    if (this._input.hasAttribute('list')) {
+                    if (this._input.hasAttribute('list') && this._input.getAttribute('list')) {
                         this._closeList();
                         this._listboxLoaded = false;
                         this._listboxSource = `#${this._input.getAttribute('list')}`;
@@ -558,6 +559,7 @@ export default class JtAutocomplete extends HTMLElement {
         } else if (this._input.hasAttribute('list')) {
             this.setAttribute('list', this._input.getAttribute('list'));
             this._listboxSource = `#${this._input.getAttribute('list')}`;
+            this._input.setAttribute('list', '');
             this._input.removeAttribute('list');
         }
 
