@@ -17,6 +17,7 @@
     "clean": "npm-run-all -p clean-css clean-dist clean-js",
     "lint": "eslint ./src --ext .ts",
     "lint-css": "stylelint \"./src/**/*.scss\"",
+    "prepare": "npm run build",
     "test": "jest",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
