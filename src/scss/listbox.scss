@@ -2,17 +2,19 @@
 @use 'util/mixins.scss';
 
 .jt-listbox {
-    --jt-listbox-padding: 0.2em;
-    --jt-listbox-start-padding: 0.2em;
-    --jt-listbox-group-indent: 1em;
-
+    /* Listbox Layout Variables */
     --_jt-listbox-padding: var(--jt-listbox-padding, 0.2em);
     --_jt-listbox-start-padding: var(--jt-listbox-start-padding, 0.2em);
     --_jt-listbox-group-indent: var(--jt-listbox-group-indent, 1em);
+    --_jt-listbox-separator-margin: var(--jt-listbox-separator-margin, 0em);
+    --_jt-listbox-max-height: var(--jt-listbox-max-height, 8em);
 
+    /* Listbox Layout */
     margin: 0;
     padding: 0;
     list-style-type: none;
+    max-block-size: var(--_jt-listbox-max-height);
+    overflow-y: auto;
     overflow-block: auto;
 
     ul {
@@ -20,21 +22,37 @@
         padding: 0;
         list-style-type: none;
     }
+
+    .jt-listbox__item {
+        position: relative;
+        display: block;
+        padding: var(--_jt-listbox-padding);
+        padding-inline-start: var(--_jt-listbox-start-padding);
+        cursor: default;
+
+        &[aria-hidden="true"],
+        &[hidden] {
+            display: none;
+        }
+
+        &[aria-checked="true"] {
+            clip: rect(0 0 0 0); 
+            clip-path: inset(50%);
+            height: 1px;
+            overflow: hidden;
+            position: absolute;
+            white-space: nowrap; 
+            width: 1px;
+        }
+    }
+
+    /* Listbox Theming */
+    background-color: var(--_jt-control-background);
 }
 
 .jt-listbox__item {
-    position: relative;
-    display: block;
-    padding: var(--_jt-listbox-padding);
-    padding-inline-start: var(--_jt-listbox-start-padding);
-    cursor: default;
-
-    &[aria-hidden="true"],
-    &[hidden] {
-        display: none;
-    }
-
     &[aria-disabled="true"] {
+        background-color: var(--_jt-control-disabled-background);
         color: var(--_jt-control-disabled-color);
     }
 
@@ -52,7 +70,7 @@
     }
 
     &.jt-focused {
-        outline: var(--_jt-control-disabled-color) var(--_jt-focus-ring-style) var(--_jt-focus-ring-width);
+        outline: var(--_jt-focus-ring-color) var(--_jt-focus-ring-style) var(--_jt-focus-ring-width);
         outline-offset: var(--_jt-focus-ring-offset);
     }
 
@@ -64,24 +82,14 @@
     }
 
     &[aria-selected="true"] {
-        background-color: var(--_jt-control-accent-color);
-        color: var(--_jt-control-background);
-    }
-
-    &[aria-checked="true"] {
-        clip: rect(0 0 0 0); 
-        clip-path: inset(50%);
-        height: 1px;
-        overflow: hidden;
-        position: absolute;
-        white-space: nowrap; 
-        width: 1px;
+        background-color: var(--_jt-control-selection-background);
+        color: var(--_jt-control-selection-color);
     }
 }
 
 .jt-listbox__group {
     .jt-listbox__item:not(.jt-listbox__item--header) {
-        padding-inline-start: calc(var(--_jt-listbox-start-padding) + var(--jt-listbox-group-indent));
+        padding-inline-start: calc(var(--_jt-listbox-start-padding) + var(--_jt-listbox-group-indent));
     }
 
     .jt-listbox__item--header {

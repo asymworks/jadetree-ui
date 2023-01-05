@@ -4,29 +4,6 @@
 @use 'listbox.scss';
 
 jt-autocomplete {
-    --_jt-control-accent-color: var(--jt-control-accent-color, #08e);
-
-    --_jt-control-arrow-size: var(--jt-control-arrow-size, 0.5em);
-
-    --_jt-control-color: var(--jt-control-color, #111);
-    --_jt-control-background: var(--jt-control-background, #fff);
-    --_jt-control-border: var(--jt-control-border, #999);
-    --_jt-control-border-radius: var(--jt-control-border-radius, 3px);
-    --_jt-control-border-hover: var(--jt-control-border-hover, #555);
-    --_jt-control-border-focus: var(--jt-control-border-focus, var(--_jt-control-accent-color, #08e));
-    --_jt-control-disabled-color: var(--jt-control-disabled-color, #aaa);
-    --_jt-control-hover-color: var(--jt-control-hover-color, var(--_jt-control-accent-color, #08e));
-    --_jt-control-hover-background: var(--jt-control-hover-background, #fff);
-
-    --_jt-focus-color: var(--jt-focus-color, #eee);
-    --_jt-focus-background: var(--jt-focus-background, #08f);
-    --_jt-focus-ring-color: var(--jt-focus-ring-color, #eee);
-    --_jt-focus-ring-style: var(--jt-focus-ring-style, dotted);
-    --_jt-focus-ring-width: var(--jt-focus-ring-style, 1px);
-    --_jt-focus-ring-offset: var(--jt-focus-ring-offset, -2px);
-
-    --_jt-listbox-max-height: var(--jt-listbox-max-height, 8em);
-
     position: relative;
     display: inline-block;
     color: var(--_jt-control-color);
@@ -69,7 +46,7 @@ jt-autocomplete {
         visibility: hidden;
         position: absolute;
         inset: auto 0;
-        border: 1px solid var(--_jt-control-border);
+        border: 1px solid var(--_jt-control-border-color);
         border-end-start-radius: var(--_jt-control-border-radius);
         border-end-end-radius: var(--_jt-control-border-radius);
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 20%);
@@ -77,12 +54,6 @@ jt-autocomplete {
         &:last-child {
             border-end-start-radius: var(--_jt-control-border-radius);
             border-end-end-radius: var(--_jt-control-border-radius);
-        }
-
-        .jt-listbox {
-            max-block-size: var(--_jt-listbox-max-height);
-            overflow-y: auto;
-            overflow-block: auto;
         }
     }
 
@@ -115,7 +86,7 @@ jt-autocomplete {
             .jt-control:focus-within,
             .jt-control:hover {
                 border: none;
-                border-bottom: 1px solid var(--_jt-control-border);
+                border-bottom: 1px solid var(--_jt-control-border-color);
                 border-radius: 0;
                 outline: none;
                 padding-block: 0.2em;
