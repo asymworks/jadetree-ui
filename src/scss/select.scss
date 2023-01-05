@@ -169,12 +169,6 @@ jt-select {
                 background-color: var(--_jt-control-background);
                 border-radius: 0.5em;
             }
-
-            .jt-listbox__item[role=option],
-            .jt-listbox__item[role=presentation] {
-                padding: calc(var(--_jt-listbox-padding) + 0.2em);
-                padding-inline-start: var(--_jt-listbox-start-padding);
-            }
         }
 
         &[searchable] .jt-popup {

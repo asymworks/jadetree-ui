@@ -30,6 +30,12 @@
         padding-inline-start: var(--_jt-listbox-start-padding);
         cursor: default;
 
+        /* Increase Padding for small screens */
+        @media not (pointer: fine), (max-width: 640px) {
+            padding: calc(var(--_jt-listbox-padding) + 0.2em);
+            padding-inline-start: calc(var(--_jt-listbox-start-padding) + 0.2em);
+        }
+
         &[aria-hidden="true"],
         &[hidden] {
             display: none;

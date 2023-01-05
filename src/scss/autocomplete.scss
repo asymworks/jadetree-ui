@@ -98,13 +98,9 @@ jt-autocomplete {
                 box-shadow: none;
 
                 .jt-listbox {
-                    max-block-size: 100%;
+                    max-block-size: 100vh;
+                    max-block-size: -webkit-fill-available;
                 }
-            }
-
-            .jt-listbox__item[role=option],
-            .jt-listbox__item[role=presentation] {
-                padding: 0.4em;
             }
         }
     }

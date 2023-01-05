@@ -328,6 +328,10 @@ export default class JtAutocomplete extends HTMLElement {
                     this._closeList();
                     this._focusTextbox();
                     handled = true;
+                } else if (this.open) {
+                    this._closeList();
+                    this._focusTextbox();
+                    handled = true;
                 }
                 break;
 
