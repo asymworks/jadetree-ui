@@ -1,4 +1,4 @@
-/*! JtControls v0.1.17 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.1.18 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 var qinu_minExports = {};
@@ -1471,6 +1471,14 @@ class JtAutocomplete extends HTMLElement {
         this._focusClear();
     }
     /** @private */
+    _onInput() {
+        if (!this.open) {
+            this._openList();
+        }
+        this._listbox.focusValue(this._listbox.filter);
+        this._listbox.filter = this._input.value;
+    }
+    /** @private */
     _onItemClick(ev) {
         if (!this.readOnly) {
             this._setValue(ev.detail.value);
@@ -1665,6 +1673,7 @@ class JtAutocomplete extends HTMLElement {
         this._input.addEventListener('click', () => this._onClick());
         this._input.addEventListener('focusin', () => this._onFocusIn());
         this._input.addEventListener('focusout', () => this._onFocusOut());
+        this._input.addEventListener('input', () => this._onInput());
         this._input.addEventListener('keydown', (ev) => this._onKeyDown(ev));
         this._input.addEventListener('keyup', (ev) => this._onKeyUp(ev));
         // Create buttons

@@ -66,6 +66,8 @@ export default class JtAutocomplete extends HTMLElement {
     /** @private */
     _onFocusOut(): void;
     /** @private */
+    _onInput(): void;
+    /** @private */
     _onItemClick(ev: CustomEvent): void;
     /** @private */
     _onItemFocusIn(ev: FocusEvent): void;
