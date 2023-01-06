@@ -6,6 +6,10 @@ module.exports = {
     ],
     addons: [
         '@storybook/addon-a11y',
+        {
+            name: '@storybook/addon-docs',
+            options: { configureJSX: true },
+        },
         '@storybook/addon-links',
         '@storybook/addon-essentials',
         '@storybook/addon-interactions',

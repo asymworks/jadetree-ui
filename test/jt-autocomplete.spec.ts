@@ -4,7 +4,9 @@ import { within } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { JSDOM } from 'jsdom';
 import JtAutocomplete from '../src/components/autocomplete';
-import { waitForAttr, waitForRemovedAttr } from './util/test-util';
+import { waitForAttr, waitForRemovedAttr, waitForSelector } from './util/test-util';
+
+const waitForJtAutocomplete = () => waitForSelector('jt-autocomplete > .jt-control');
 
 beforeAll(() => {
     customElements.define('jt-autocomplete', JtAutocomplete);
@@ -28,30 +30,38 @@ describe('Autocomplete Component', () => {
             expect(el).toBeInstanceOf(JtAutocomplete);
             expect(within(el).queryByRole('combobox')).toBeNull();
         });
-        it('should accept an <input> child', () => {
+        it('should accept an <input> child', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             expect(el).toBeDefined();
             expect(el).toBeInstanceOf(JtAutocomplete);
             expect(within(el).queryByRole('combobox')).not.toBeNull();
         });
-        it('should disable autocomplete on the form if it is unset', () => {
+        it('should disable autocomplete on the form if it is unset', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             expect(el).toBeDefined();
             expect(el).toBeInstanceOf(JtAutocomplete);
             expect(within(el).queryByRole('combobox')).toHaveAttribute('autocomplete', 'off');
         });
-        it('should honor an existing autocomplete attribute', () => {
+        it('should honor an existing autocomplete attribute', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" autocomplete="chrome-off" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             expect(el).toBeDefined();
             expect(el).toBeInstanceOf(JtAutocomplete);
             expect(within(el).queryByRole('combobox')).toHaveAttribute('autocomplete', 'chrome-off');
         });
-        it('should default to the enabled state', () => {
+        it('should default to the enabled state', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             const input = within(el).getByRole('combobox') as HTMLInputElement;
 
             expect(el).toBeDefined();
@@ -60,9 +70,11 @@ describe('Autocomplete Component', () => {
             expect(el).not.toHaveAttribute('aria-disabled');
             expect(input).not.toBeDisabled();
         });
-        it('should set the aria-disabled state from the child <input>', () => {
+        it('should set the aria-disabled state from the child <input>', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" disabled /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             const input = within(el).getByRole('combobox') as HTMLInputElement;
 
             expect(el).toBeDefined();
@@ -74,6 +86,8 @@ describe('Autocomplete Component', () => {
         it('should set the aria-disabled state from changing input.disabled', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             expect(el).toBeDefined();
             expect(el.disabled).toBe(false);
             expect(el.hasAttribute('aria-disabled')).toBeFalsy();
@@ -100,6 +114,8 @@ describe('Autocomplete Component', () => {
         it('should set the aria-disabled state from changing input[disabled]', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             expect(el).toBeDefined();
             expect(el.disabled).toBe(false);
             expect(el.hasAttribute('aria-disabled')).toBeFalsy();
@@ -126,6 +142,8 @@ describe('Autocomplete Component', () => {
         it('should set the aria-disabled state from setting the disabled property', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             expect(el).toBeDefined();
             expect(el.disabled).toBe(false);
             expect(el.hasAttribute('aria-disabled')).toBeFalsy();
@@ -149,18 +167,22 @@ describe('Autocomplete Component', () => {
                 expect(input.disabled).toBeFalsy();
             });
         });
-        it('should default to the editable state', () => {
+        it('should default to the editable state', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             expect(el).toBeDefined();
             expect(el.readOnly).toBe(false);
             expect(el.hasAttribute('aria-readonly')).toBeFalsy();
             const input = el.querySelector('input') as HTMLInputElement;
             expect(input.readOnly).toBeFalsy();
         });
-        it('should set the aria-readonly state from the child <input>', () => {
+        it('should set the aria-readonly state from the child <input>', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" readonly /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             expect(el).toBeDefined();
             expect(el.readOnly).toBe(true);
             expect(el.hasAttribute('aria-readonly')).toBeTruthy();
@@ -168,6 +190,8 @@ describe('Autocomplete Component', () => {
         it('should set the aria-readonly state from changing input.readonly', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             expect(el).toBeDefined();
             expect(el.readOnly).toBe(false);
             expect(el.hasAttribute('aria-readonly')).toBeFalsy();
@@ -194,6 +218,8 @@ describe('Autocomplete Component', () => {
         it('should set the aria-readonly state from changing input[readonly]', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             expect(el).toBeDefined();
             expect(el.readOnly).toBe(false);
             expect(el.hasAttribute('aria-readonly')).toBeFalsy();
@@ -220,6 +246,8 @@ describe('Autocomplete Component', () => {
         it('should set the aria-readonly state from setting the readOnly property', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             expect(el).toBeDefined();
             expect(el.readOnly).toBe(false);
             expect(el.hasAttribute('aria-readonly')).toBeFalsy();
@@ -243,9 +271,11 @@ describe('Autocomplete Component', () => {
                 expect(input.readOnly).toBeFalsy();
             });
         });
-        it('should set the .jt-placeholder-shown on initialization for an empty <input>', () => {
+        it('should set the .jt-placeholder-shown on initialization for an empty <input>', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             const input = el.querySelector('input') as HTMLInputElement;
 
             expect(el.classList.contains('jt-placeholder-shown')).toBeTruthy();
@@ -254,6 +284,8 @@ describe('Autocomplete Component', () => {
             const user = userEvent.setup();
             document.body.innerHTML = `<jt-autocomplete><input type="text" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             const input = el.querySelector('input') as HTMLInputElement;
 
             expect(el.classList.contains('jt-placeholder-shown')).toBeTruthy();
@@ -263,9 +295,11 @@ describe('Autocomplete Component', () => {
             expect(el.classList.contains('jt-placeholder-shown')).toBeFalsy();
             expect(input.value).toEqual('test');
         });
-        it('should clear the .jt-placeholder-shown on initialization for a non-empty <input>', () => {
+        it('should clear the .jt-placeholder-shown on initialization for a non-empty <input>', async () => {
             document.body.innerHTML = `<jt-autocomplete><input type="text" value="test" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             const input = el.querySelector('input') as HTMLInputElement;
 
             expect(el.classList.contains('jt-placeholder-shown')).toBeFalsy();
@@ -274,6 +308,8 @@ describe('Autocomplete Component', () => {
             const user = userEvent.setup();
             document.body.innerHTML = `<jt-autocomplete><input type="text" value="test" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             const input = el.querySelector('input') as HTMLInputElement;
 
             expect(el.classList.contains('jt-placeholder-shown')).toBeFalsy();
@@ -285,10 +321,12 @@ describe('Autocomplete Component', () => {
         });
     });
     describe('Label Function', () => {
-        it('should maintain <label> relationships using for', async() => {
+        it('should maintain <label> relationships using for', async () => {
             const user = userEvent.setup();
             document.body.innerHTML = `<label for="jt-test">Test</label><jt-autocomplete><input type="text" id="jt-test" /></jt-autocomplete>`;
             const el = document.querySelector('jt-autocomplete') as JtAutocomplete;
+            await waitForJtAutocomplete();
+
             const input = el.querySelector('input') as HTMLInputElement;
 
             expect(within(el).getByLabelText('Test')).toEqual(input);

@@ -207,7 +207,6 @@ export default class JtSelect extends HTMLElement {
                         break;
                 }
             } else if (mutation.attributeName !== 'data-key') {
-                console.log(mutation);
                 /* Change to Option List */
                 if (!this.hasAttribute('src')) {
                     this._closeList();
@@ -460,86 +459,8 @@ export default class JtSelect extends HTMLElement {
     }
 
     /** @private */
-    _sync() {
-        const selValues = Array.from(this._select.selectedOptions).map((el) => el.value);
-        const isChanged = (this.value === '' && selValues.length !== 0)
-            || (this.value !== '' && selValues.length > 0)
-            || (this.value !== selValues[0]);
-
-        if (!isChanged) return;
-        if (!this._listbox.value) {
-            this._select.value = '';
-            this._select.dispatchEvent(new Event('change'));
-        } else if (Array.isArray(this._listbox.value)) {
-            this._select.querySelectorAll('option').forEach((el: HTMLOptionElement) => {
-                el.selected = el.value && (this._listbox.value.includes(el.value));
-            });
-            this._select.dispatchEvent(new Event('change'));
-        } else if (this._listbox.value !== selValues[0]) {
-            this._select.value = this._listbox.value;
-            this._select.dispatchEvent(new Event('change'));
-        }
-    }
-    
-    /** @private */
-    _typeahead(char: string) {
-        const allSame = (array: unknown[]) => (array.every((i) => i === array[0]));
-
-        // Cancel existing typeahead timer
-        if (typeof this._typeaheadTimer === 'number') {
-            window.clearTimeout(this._typeaheadTimer);
-        }
-
-        // Set new typeahead timer
-        this._typeaheadTimer = window.setTimeout(() => {
-            this._filter = '';
-        }, this._typeaheadTimeout || 500);
-
-        // Update filter and select next item
-        this._filter += char;
-        if (this._filter.length > 1 && allSame(this._filter.split(''))) {
-            // Repeated letters cycle through
-            this._listbox.focusTypeahead(this._filter[0]);
-        } else {
-            // Match exact string
-            this._listbox.focusTypeahead(this._filter);
-        }
-    }
-
-    /** @private */
-    _update() {
-        if (!this._listbox.value) {
-            this._control.innerHTML = `<span class="jt-placeholder">${this.getAttribute('placeholder') || '&nbsp;'}</span>`;
-            this.classList.add('jt-placeholder-shown');
-        } else {
-            this._control.innerHTML = `<span>${this._listbox.displayText}</span>`
-            this.classList.remove('jt-placeholder-shown');
-        }
-
-        this._sync();
-    }
-
-    /** @private */
-    _updateWidth() {
-        const sw = this._listbox.root.scrollWidth;
-        if (sw == 0) {
-            // Poll every 100ms until the list box has a Client Width
-            setTimeout(() => this._updateWidth(), 100);
-        } else {
-            this._control.style.width = `${sw}px`;
-        }
-    }
-
-    /** Clear the Input Element */
-    clear() {
-        this._selectValue('');
-    }
-
-    /* -- Constructor -- */
-    constructor() {
-        super();
-        this._id = this.getAttribute('id') || uid('jt-select');
-        if (!this.hasAttribute('id')) this.setAttribute('id', this._id);
+    _setup() {
+        if (!this.isConnected) return;
 
         this._select = this.querySelector('select');
         if (!this._select) return;
@@ -650,6 +571,89 @@ export default class JtSelect extends HTMLElement {
         this._updateWidth();
     }
 
+    /** @private */
+    _sync() {
+        const selValues = Array.from(this._select.selectedOptions).map((el) => el.value);
+        const isChanged = (this.value === '' && selValues.length !== 0)
+            || (this.value !== '' && selValues.length > 0)
+            || (this.value !== selValues[0]);
+
+        if (!isChanged) return;
+        if (!this._listbox.value) {
+            this._select.value = '';
+            this._select.dispatchEvent(new Event('change'));
+        } else if (Array.isArray(this._listbox.value)) {
+            this._select.querySelectorAll('option').forEach((el: HTMLOptionElement) => {
+                el.selected = el.value && (this._listbox.value.includes(el.value));
+            });
+            this._select.dispatchEvent(new Event('change'));
+        } else if (this._listbox.value !== selValues[0]) {
+            this._select.value = this._listbox.value;
+            this._select.dispatchEvent(new Event('change'));
+        }
+    }
+    
+    /** @private */
+    _typeahead(char: string) {
+        const allSame = (array: unknown[]) => (array.every((i) => i === array[0]));
+
+        // Cancel existing typeahead timer
+        if (typeof this._typeaheadTimer === 'number') {
+            window.clearTimeout(this._typeaheadTimer);
+        }
+
+        // Set new typeahead timer
+        this._typeaheadTimer = window.setTimeout(() => {
+            this._filter = '';
+        }, this._typeaheadTimeout || 500);
+
+        // Update filter and select next item
+        this._filter += char;
+        if (this._filter.length > 1 && allSame(this._filter.split(''))) {
+            // Repeated letters cycle through
+            this._listbox.focusTypeahead(this._filter[0]);
+        } else {
+            // Match exact string
+            this._listbox.focusTypeahead(this._filter);
+        }
+    }
+
+    /** @private */
+    _update() {
+        if (!this._listbox.value) {
+            this._control.innerHTML = `<span class="jt-placeholder">${this.getAttribute('placeholder') || '&nbsp;'}</span>`;
+            this.classList.add('jt-placeholder-shown');
+        } else {
+            this._control.innerHTML = `<span>${this._listbox.displayText}</span>`
+            this.classList.remove('jt-placeholder-shown');
+        }
+
+        this._sync();
+    }
+
+    /** @private */
+    _updateWidth() {
+        const sw = this._listbox.root.scrollWidth;
+        if (sw == 0) {
+            // Poll every 100ms until the list box has a Client Width
+            setTimeout(() => this._updateWidth(), 100);
+        } else {
+            this._control.style.width = `${sw}px`;
+        }
+    }
+
+    /** Clear the Input Element */
+    clear() {
+        this._selectValue('');
+    }
+
+    /* -- Constructor -- */
+    constructor() {
+        super();
+        this._id = this.getAttribute('id') || uid('jt-select');
+        if (!this.hasAttribute('id')) this.setAttribute('id', this._id);
+    }
+
     /* -- Web Component Lifecycle Hooks --*/
     static get observedAttributes(): string[] {
         return [
@@ -706,6 +710,11 @@ export default class JtSelect extends HTMLElement {
                 this._listboxLoaded = false;
                 break;
         }
+    }
+
+    connectedCallback() {
+        // Set up the component after the rendering loop finishes
+        setTimeout(() => this._setup(), 0);
     }
 
     /* -- Web Component Registration Helper -- */

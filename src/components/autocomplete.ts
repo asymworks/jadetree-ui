@@ -478,25 +478,9 @@ export default class JtAutocomplete extends HTMLElement {
         }
     }
 
-    /** Clear the Input Element */
-    clear() {
-        this._setValue('');
-        requestAnimationFrame(() => {
-            this._input.focus();
-        });
-    }
-
-    /** @return Item Data matching the current Input (or null) */
-    matchingItem(): JtListItem | null {
-        if (!this._input.value) return null;
-        return this._listbox.itemByValue(this._input.value);
-    }
-
-    /* -- Constructor -- */
-    constructor() {
-        super();
-        this._id = this.getAttribute('id') || uid('jt-autocomplete');
-        if (!this.hasAttribute('id')) this.setAttribute('id', this._id);
+    /** @private */
+    _setup() {
+        if (!this.isConnected) return;
 
         this._input = this.querySelector('input');
         if (!this._input) return;
@@ -597,6 +581,27 @@ export default class JtAutocomplete extends HTMLElement {
         document.addEventListener('click', (ev) => this._onDocumentClick(ev));
     }
 
+    /** Clear the Input Element */
+    clear() {
+        this._setValue('');
+        requestAnimationFrame(() => {
+            this._input.focus();
+        });
+    }
+
+    /** @return Item Data matching the current Input (or null) */
+    matchingItem(): JtListItem | null {
+        if (!this._input.value) return null;
+        return this._listbox.itemByValue(this._input.value);
+    }
+
+    /* -- Constructor -- */
+    constructor() {
+        super();
+        this._id = this.getAttribute('id') || uid('jt-autocomplete');
+        if (!this.hasAttribute('id')) this.setAttribute('id', this._id);
+    }
+
     /* -- Web Component Lifecycle Hooks --*/
     static get observedAttributes(): string[] {
         return [
@@ -654,6 +659,11 @@ export default class JtAutocomplete extends HTMLElement {
                 this._listboxSource = newValue;
                 break;
         }
+    }
+
+    connectedCallback() {
+        // Set up the component after the rendering loop finishes
+        setTimeout(() => this._setup(), 0);
     }
 
     /* -- Web Component Registration Helper -- */

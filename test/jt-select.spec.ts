@@ -4,7 +4,9 @@ import { within } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { JSDOM } from 'jsdom';
 import JtSelect from '../src/components/select';
-import { waitForAttr, waitForRemovedAttr } from './util/test-util';
+import { waitForAttr, waitForRemovedAttr, waitForSelector } from './util/test-util';
+
+const waitForJtSelect = () => waitForSelector('jt-select > .jt-control');
 
 beforeAll(() => {
     customElements.define('jt-select', JtSelect);
@@ -28,41 +30,52 @@ describe('Select Component', () => {
             expect(el).toBeInstanceOf(JtSelect);
             expect(within(el).queryByRole('combobox')).toBeNull();
         });
-        it('should accept an <select> child', () => {
+        it('should accept an <select> child', async () => {
             document.body.innerHTML = `<jt-select><select /></jt-select>`;
             const el = document.querySelector('jt-select') as JtSelect;
-            expect(el).toBeDefined();
-            expect(el).toBeInstanceOf(JtSelect);
-            expect(within(el).queryByRole('combobox')).not.toBeNull();
+            await waitForJtSelect().then(() => {
+                expect(el).toBeDefined();
+                expect(el).toBeInstanceOf(JtSelect);
+                expect(within(el).queryByRole('combobox')).not.toBeNull();
+            });
         });
-        it('should default to the enabled state', () => {
+        it('should default to the enabled state', async () => {
             document.body.innerHTML = `<jt-select><select /></jt-select>`;
-            const el = document.querySelector('jt-select') as JtSelect;
-            const input = within(el).getByRole('combobox') as HTMLDivElement;
+            await waitForJtSelect().then(() => {
+                const el = document.querySelector('jt-select') as JtSelect;
+                const input = within(el).getByRole('combobox') as HTMLDivElement;
 
-            expect(el).toBeDefined();
-            expect(el.disabled).toEqual(false);
-            expect(el).not.toBeDisabled();
-            expect(el).not.toHaveAttribute('aria-disabled');
-            expect(input).not.toBeDisabled();
+                expect(el).toBeDefined();
+                expect(el.disabled).toEqual(false);
+                expect(el).not.toBeDisabled();
+                expect(el).not.toHaveAttribute('aria-disabled');
+                expect(input).not.toBeDisabled();
+            });
         });
-        it('should set the aria-disabled state from the child <select>', () => {
+        it('should set the aria-disabled state from the child <select>', async () => {
             document.body.innerHTML = `<jt-select><select disabled /></jt-select>`;
-            const el = document.querySelector('jt-select') as JtSelect;
-            const input = within(el).getByRole('combobox') as HTMLInputElement;
+            await waitForJtSelect().then(() => {
+                const el = document.querySelector('jt-select') as JtSelect;
+                const input = within(el).getByRole('combobox') as HTMLDivElement;
 
-            expect(el).toBeDefined();
-            expect(el.disabled).toEqual(true);
-            expect(el).toHaveAttribute('aria-disabled');
-            expect(el).toBeDisabled();
-            expect(input).toHaveAttribute('aria-disabled');
+                expect(el).toBeDefined();
+                expect(el.isConnected).toEqual(true);
+                expect(el.disabled).toEqual(true);
+                expect(el).toHaveAttribute('aria-disabled');
+                expect(el).toBeDisabled();
+                expect(input).toHaveAttribute('aria-disabled');
+            });
         });
         it('should set the aria-disabled state from changing select.disabled', async () => {
             document.body.innerHTML = `<jt-select><select /></jt-select>`;
             const el = document.querySelector('jt-select') as JtSelect;
-            expect(el).toBeDefined();
-            expect(el.disabled).toBe(false);
-            expect(el.hasAttribute('aria-disabled')).toBeFalsy();
+
+            await waitForJtSelect().then(() => {
+                expect(el).toBeDefined();
+                expect(el.disabled).toBe(false);
+                expect(el.hasAttribute('aria-disabled')).toBeFalsy();
+            });
+
             const input = el.querySelector('select') as HTMLSelectElement;
             expect(input.hasAttribute('disabled')).toBeFalsy();
             expect(input.disabled).toBeFalsy();
@@ -82,10 +95,11 @@ describe('Select Component', () => {
                 expect(input.hasAttribute('disabled')).toBeFalsy();
                 expect(input.disabled).toBeFalsy();
             });
-        });
-        it('should set the aria-disabled state from changing selext[disabled]', async () => {
+        });it('should set the aria-disabled state from changing selext[disabled]', async () => {
             document.body.innerHTML = `<jt-select><select /></jt-select>`;
             const el = document.querySelector('jt-select') as JtSelect;
+            await waitForJtSelect();
+
             expect(el).toBeDefined();
             expect(el.disabled).toBe(false);
             expect(el.hasAttribute('aria-disabled')).toBeFalsy();
@@ -112,6 +126,8 @@ describe('Select Component', () => {
         it('should set the aria-disabled state from setting the disabled property', async () => {
             document.body.innerHTML = `<jt-select><select /></jt-select>`;
             const el = document.querySelector('jt-select') as JtSelect;
+            await waitForJtSelect();
+
             expect(el).toBeDefined();
             expect(el.disabled).toBe(false);
             expect(el.hasAttribute('aria-disabled')).toBeFalsy();
@@ -135,9 +151,11 @@ describe('Select Component', () => {
                 expect(input.disabled).toBeFalsy();
             });
         });
-        it('should default to the editable state', () => {
+        it('should default to the editable state', async () => {
             document.body.innerHTML = `<jt-select><select /></jt-select>`;
             const el = document.querySelector('jt-select') as JtSelect;
+            await waitForJtSelect();
+
             expect(el).toBeDefined();
             expect(el.readOnly).toBe(false);
             expect(el.hasAttribute('aria-readonly')).toBeFalsy();
@@ -145,6 +163,8 @@ describe('Select Component', () => {
         it('should set the aria-readonly state from setting the readOnly property', async () => {
             document.body.innerHTML = `<jt-select><select /></jt-select>`;
             const el = document.querySelector('jt-select') as JtSelect;
+            await waitForJtSelect();
+
             expect(el).toBeDefined();
             expect(el.readOnly).toBe(false);
             expect(el.hasAttribute('aria-readonly')).toBeFalsy();
@@ -163,13 +183,17 @@ describe('Select Component', () => {
         });
     });
     describe('Label Function', () => {
-        it('should maintain <label> relationships using for', async() => {
+        it('should maintain <label> relationships using for', async () => {
             const user = userEvent.setup();
-            document.body.innerHTML = `<label for="jt-test">Test</label><jt-select><input type="text" id="jt-test" /></jt-select>`;
+            document.body.innerHTML = `<label for="jt-test">Test</label><jt-select><select id="jt-test" /></jt-select>`;
             const el = document.querySelector('jt-select') as JtSelect;
-            const input = el.querySelector('input') as HTMLInputElement;
+            await waitForJtSelect();
 
-            expect(within(el).getByLabelText('Test')).toEqual(input);
+            const select = el.querySelector('input') as HTMLInputElement;
+            const input = within(el).getByRole('combobox') as HTMLDivElement;
+
+            expect(within(document.body).getByLabelText('Test')).not.toEqual(select);
+            expect(within(document.body).getByLabelText('Test')).toEqual(input);
         });
     });
 });
