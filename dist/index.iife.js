@@ -1,4 +1,4 @@
-/*! JtControls v0.1.15 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.1.16 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 (function () {
 	'use strict';
 
@@ -1645,25 +1645,10 @@
 	            this._input.dispatchEvent(new Event('input'));
 	        }
 	    }
-	    /** Clear the Input Element */
-	    clear() {
-	        this._setValue('');
-	        requestAnimationFrame(() => {
-	            this._input.focus();
-	        });
-	    }
-	    /** @return Item Data matching the current Input (or null) */
-	    matchingItem() {
-	        if (!this._input.value)
-	            return null;
-	        return this._listbox.itemByValue(this._input.value);
-	    }
-	    /* -- Constructor -- */
-	    constructor() {
-	        super();
-	        this._id = this.getAttribute('id') || uid('jt-autocomplete');
-	        if (!this.hasAttribute('id'))
-	            this.setAttribute('id', this._id);
+	    /** @private */
+	    _setup() {
+	        if (!this.isConnected)
+	            return;
 	        this._input = this.querySelector('input');
 	        if (!this._input)
 	            return;
@@ -1740,6 +1725,26 @@
 	        // Register Click-Away Handler
 	        document.addEventListener('click', (ev) => this._onDocumentClick(ev));
 	    }
+	    /** Clear the Input Element */
+	    clear() {
+	        this._setValue('');
+	        requestAnimationFrame(() => {
+	            this._input.focus();
+	        });
+	    }
+	    /** @return Item Data matching the current Input (or null) */
+	    matchingItem() {
+	        if (!this._input.value)
+	            return null;
+	        return this._listbox.itemByValue(this._input.value);
+	    }
+	    /* -- Constructor -- */
+	    constructor() {
+	        super();
+	        this._id = this.getAttribute('id') || uid('jt-autocomplete');
+	        if (!this.hasAttribute('id'))
+	            this.setAttribute('id', this._id);
+	    }
 	    /* -- Web Component Lifecycle Hooks --*/
 	    static get observedAttributes() {
 	        return [
@@ -1792,6 +1797,10 @@
 	                this._listboxSource = newValue;
 	                break;
 	        }
+	    }
+	    connectedCallback() {
+	        // Set up the component after the rendering loop finishes
+	        setTimeout(() => this._setup(), 0);
 	    }
 	    /* -- Web Component Registration Helper -- */
 	    static register() {
@@ -1970,7 +1979,6 @@
 	                }
 	            }
 	            else if (mutation.attributeName !== 'data-key') {
-	                console.log(mutation);
 	                /* Change to Option List */
 	                if (!this.hasAttribute('src')) {
 	                    this._closeList();
@@ -2197,85 +2205,9 @@
 	        this._updateWidth();
 	    }
 	    /** @private */
-	    _sync() {
-	        const selValues = Array.from(this._select.selectedOptions).map((el) => el.value);
-	        const isChanged = (this.value === '' && selValues.length !== 0)
-	            || (this.value !== '' && selValues.length > 0)
-	            || (this.value !== selValues[0]);
-	        if (!isChanged)
+	    _setup() {
+	        if (!this.isConnected)
 	            return;
-	        if (!this._listbox.value) {
-	            this._select.value = '';
-	            this._select.dispatchEvent(new Event('change'));
-	        }
-	        else if (Array.isArray(this._listbox.value)) {
-	            this._select.querySelectorAll('option').forEach((el) => {
-	                el.selected = el.value && (this._listbox.value.includes(el.value));
-	            });
-	            this._select.dispatchEvent(new Event('change'));
-	        }
-	        else if (this._listbox.value !== selValues[0]) {
-	            this._select.value = this._listbox.value;
-	            this._select.dispatchEvent(new Event('change'));
-	        }
-	    }
-	    /** @private */
-	    _typeahead(char) {
-	        const allSame = (array) => (array.every((i) => i === array[0]));
-	        // Cancel existing typeahead timer
-	        if (typeof this._typeaheadTimer === 'number') {
-	            window.clearTimeout(this._typeaheadTimer);
-	        }
-	        // Set new typeahead timer
-	        this._typeaheadTimer = window.setTimeout(() => {
-	            this._filter = '';
-	        }, this._typeaheadTimeout || 500);
-	        // Update filter and select next item
-	        this._filter += char;
-	        if (this._filter.length > 1 && allSame(this._filter.split(''))) {
-	            // Repeated letters cycle through
-	            this._listbox.focusTypeahead(this._filter[0]);
-	        }
-	        else {
-	            // Match exact string
-	            this._listbox.focusTypeahead(this._filter);
-	        }
-	    }
-	    /** @private */
-	    _update() {
-	        if (!this._listbox.value) {
-	            this._control.innerHTML = `<span class="jt-placeholder">${this.getAttribute('placeholder') || '&nbsp;'}</span>`;
-	            this.classList.add('jt-placeholder-shown');
-	        }
-	        else {
-	            this._control.innerHTML = `<span>${this._listbox.displayText}</span>`;
-	            this.classList.remove('jt-placeholder-shown');
-	        }
-	        this._sync();
-	    }
-	    /** @private */
-	    _updateWidth() {
-	        const sw = this._listbox.root.scrollWidth;
-	        if (sw == 0) {
-	            // Poll every 100ms until the list box has a Client Width
-	            setTimeout(() => this._updateWidth(), 100);
-	        }
-	        else {
-	            this._control.style.width = `${sw}px`;
-	        }
-	    }
-	    /** Clear the Input Element */
-	    clear() {
-	        this._selectValue('');
-	    }
-	    /* -- Constructor -- */
-	    constructor() {
-	        super();
-	        this._filter = '';
-	        this._typeaheadTimeout = 500;
-	        this._id = this.getAttribute('id') || uid('jt-select');
-	        if (!this.hasAttribute('id'))
-	            this.setAttribute('id', this._id);
 	        this._select = this.querySelector('select');
 	        if (!this._select)
 	            return;
@@ -2360,6 +2292,87 @@
 	        this._update();
 	        this._updateWidth();
 	    }
+	    /** @private */
+	    _sync() {
+	        const selValues = Array.from(this._select.selectedOptions).map((el) => el.value);
+	        const isChanged = (this.value === '' && selValues.length !== 0)
+	            || (this.value !== '' && selValues.length > 0)
+	            || (this.value !== selValues[0]);
+	        if (!isChanged)
+	            return;
+	        if (!this._listbox.value) {
+	            this._select.value = '';
+	            this._select.dispatchEvent(new Event('change'));
+	        }
+	        else if (Array.isArray(this._listbox.value)) {
+	            this._select.querySelectorAll('option').forEach((el) => {
+	                el.selected = el.value && (this._listbox.value.includes(el.value));
+	            });
+	            this._select.dispatchEvent(new Event('change'));
+	        }
+	        else if (this._listbox.value !== selValues[0]) {
+	            this._select.value = this._listbox.value;
+	            this._select.dispatchEvent(new Event('change'));
+	        }
+	    }
+	    /** @private */
+	    _typeahead(char) {
+	        const allSame = (array) => (array.every((i) => i === array[0]));
+	        // Cancel existing typeahead timer
+	        if (typeof this._typeaheadTimer === 'number') {
+	            window.clearTimeout(this._typeaheadTimer);
+	        }
+	        // Set new typeahead timer
+	        this._typeaheadTimer = window.setTimeout(() => {
+	            this._filter = '';
+	        }, this._typeaheadTimeout || 500);
+	        // Update filter and select next item
+	        this._filter += char;
+	        if (this._filter.length > 1 && allSame(this._filter.split(''))) {
+	            // Repeated letters cycle through
+	            this._listbox.focusTypeahead(this._filter[0]);
+	        }
+	        else {
+	            // Match exact string
+	            this._listbox.focusTypeahead(this._filter);
+	        }
+	    }
+	    /** @private */
+	    _update() {
+	        if (!this._listbox.value) {
+	            this._control.innerHTML = `<span class="jt-placeholder">${this.getAttribute('placeholder') || '&nbsp;'}</span>`;
+	            this.classList.add('jt-placeholder-shown');
+	        }
+	        else {
+	            this._control.innerHTML = `<span>${this._listbox.displayText}</span>`;
+	            this.classList.remove('jt-placeholder-shown');
+	        }
+	        this._sync();
+	    }
+	    /** @private */
+	    _updateWidth() {
+	        const sw = this._listbox.root.scrollWidth;
+	        if (sw == 0) {
+	            // Poll every 100ms until the list box has a Client Width
+	            setTimeout(() => this._updateWidth(), 100);
+	        }
+	        else {
+	            this._control.style.width = `${sw}px`;
+	        }
+	    }
+	    /** Clear the Input Element */
+	    clear() {
+	        this._selectValue('');
+	    }
+	    /* -- Constructor -- */
+	    constructor() {
+	        super();
+	        this._filter = '';
+	        this._typeaheadTimeout = 500;
+	        this._id = this.getAttribute('id') || uid('jt-select');
+	        if (!this.hasAttribute('id'))
+	            this.setAttribute('id', this._id);
+	    }
 	    /* -- Web Component Lifecycle Hooks --*/
 	    static get observedAttributes() {
 	        return [
@@ -2411,6 +2424,10 @@
 	                this._listboxLoaded = false;
 	                break;
 	        }
+	    }
+	    connectedCallback() {
+	        // Set up the component after the rendering loop finishes
+	        setTimeout(() => this._setup(), 0);
 	    }
 	    /* -- Web Component Registration Helper -- */
 	    static register() {

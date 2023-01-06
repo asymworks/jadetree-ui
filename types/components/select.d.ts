@@ -88,6 +88,8 @@ export default class JtSelect extends HTMLElement {
     /** @private */
     _setListItems(items: HTMLElement | JtListItem[]): void;
     /** @private */
+    _setup(): void;
+    /** @private */
     _sync(): void;
     /** @private */
     _typeahead(char: string): void;
@@ -100,5 +102,6 @@ export default class JtSelect extends HTMLElement {
     constructor();
     static get observedAttributes(): string[];
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
+    connectedCallback(): void;
     static register(): void;
 }

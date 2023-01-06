@@ -83,6 +83,8 @@ export default class JtAutocomplete extends HTMLElement {
     _setListItems(items: HTMLElement | JtListItem[]): void;
     /** @private */
     _setValue(value: string): void;
+    /** @private */
+    _setup(): void;
     /** Clear the Input Element */
     clear(): void;
     /** @return Item Data matching the current Input (or null) */
@@ -90,5 +92,6 @@ export default class JtAutocomplete extends HTMLElement {
     constructor();
     static get observedAttributes(): string[];
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
+    connectedCallback(): void;
     static register(): void;
 }
