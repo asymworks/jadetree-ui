@@ -461,6 +461,7 @@ export default class JtSelect extends HTMLElement {
     /** @private */
     _setup() {
         if (!this.isConnected) return;
+        if (!this.hasAttribute('id')) this.setAttribute('id', this._id);
 
         this._select = this.querySelector('select');
         if (!this._select) return;
@@ -651,7 +652,6 @@ export default class JtSelect extends HTMLElement {
     constructor() {
         super();
         this._id = this.getAttribute('id') || uid('jt-select');
-        if (!this.hasAttribute('id')) this.setAttribute('id', this._id);
     }
 
     /* -- Web Component Lifecycle Hooks --*/

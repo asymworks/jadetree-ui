@@ -481,6 +481,7 @@ export default class JtAutocomplete extends HTMLElement {
     /** @private */
     _setup() {
         if (!this.isConnected) return;
+        if (!this.hasAttribute('id')) this.setAttribute('id', this._id);
 
         this._input = this.querySelector('input');
         if (!this._input) return;
@@ -599,7 +600,6 @@ export default class JtAutocomplete extends HTMLElement {
     constructor() {
         super();
         this._id = this.getAttribute('id') || uid('jt-autocomplete');
-        if (!this.hasAttribute('id')) this.setAttribute('id', this._id);
     }
 
     /* -- Web Component Lifecycle Hooks --*/

@@ -1627,6 +1627,8 @@ var JtControls = (function () {
 	    _setup() {
 	        if (!this.isConnected)
 	            return;
+	        if (!this.hasAttribute('id'))
+	            this.setAttribute('id', this._id);
 	        this._select = this.querySelector('select');
 	        if (!this._select)
 	            return;
@@ -1789,8 +1791,6 @@ var JtControls = (function () {
 	        this._filter = '';
 	        this._typeaheadTimeout = 500;
 	        this._id = this.getAttribute('id') || uid('jt-select');
-	        if (!this.hasAttribute('id'))
-	            this.setAttribute('id', this._id);
 	    }
 	    /* -- Web Component Lifecycle Hooks --*/
 	    static get observedAttributes() {

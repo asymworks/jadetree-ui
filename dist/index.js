@@ -1644,6 +1644,8 @@ class JtAutocomplete extends HTMLElement {
     _setup() {
         if (!this.isConnected)
             return;
+        if (!this.hasAttribute('id'))
+            this.setAttribute('id', this._id);
         this._input = this.querySelector('input');
         if (!this._input)
             return;
@@ -1737,8 +1739,6 @@ class JtAutocomplete extends HTMLElement {
     constructor() {
         super();
         this._id = this.getAttribute('id') || uid('jt-autocomplete');
-        if (!this.hasAttribute('id'))
-            this.setAttribute('id', this._id);
     }
     /* -- Web Component Lifecycle Hooks --*/
     static get observedAttributes() {
@@ -2203,6 +2203,8 @@ class JtSelect extends HTMLElement {
     _setup() {
         if (!this.isConnected)
             return;
+        if (!this.hasAttribute('id'))
+            this.setAttribute('id', this._id);
         this._select = this.querySelector('select');
         if (!this._select)
             return;
@@ -2365,8 +2367,6 @@ class JtSelect extends HTMLElement {
         this._filter = '';
         this._typeaheadTimeout = 500;
         this._id = this.getAttribute('id') || uid('jt-select');
-        if (!this.hasAttribute('id'))
-            this.setAttribute('id', this._id);
     }
     /* -- Web Component Lifecycle Hooks --*/
     static get observedAttributes() {
