@@ -48,14 +48,15 @@ export function waitForRemovedAttr(el: HTMLElement, attr: string): Promise<void>
  * @param selectors Selector Query
  * @returns         Promise that resolves when the selector is available
  */
-export function waitForSelector(selectors: string): Promise<void> {
-    return new Promise<void>((resolve) => {
-        if (document.querySelector(selectors)) resolve();
+export function waitForSelector(selectors: string): Promise<HTMLElement> {
+    return new Promise<HTMLElement>((resolve) => {
+        const el = document.querySelector(selectors);
+        if (el instanceof HTMLElement) resolve(el);
         const obs = new MutationObserver((mutations) => {
             for (const m of mutations) {
                 for (const n of m.addedNodes) {
                     if (n instanceof HTMLElement && n.matches(selectors)) {
-                        resolve();
+                        resolve(n);
                         obs.disconnect();
                     }
                 }

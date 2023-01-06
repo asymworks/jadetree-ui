@@ -291,6 +291,15 @@ export default class JtAutocomplete extends HTMLElement {
     }
 
     /** @private */
+    _onInput() {
+        if (!this.open) {
+            this._openList();
+        }
+        this._listbox.focusValue(this._listbox.filter);
+        this._listbox.filter = this._input.value;
+    }
+
+    /** @private */
     _onItemClick(ev: CustomEvent) {
         if (!this.readOnly) {
             this._setValue(ev.detail.value as string);
@@ -504,6 +513,7 @@ export default class JtAutocomplete extends HTMLElement {
         this._input.addEventListener('click', () => this._onClick());
         this._input.addEventListener('focusin', () => this._onFocusIn());
         this._input.addEventListener('focusout', () => this._onFocusOut());
+        this._input.addEventListener('input', () => this._onInput());
         this._input.addEventListener('keydown', (ev) => this._onKeyDown(ev));
         this._input.addEventListener('keyup', (ev) => this._onKeyUp(ev));
 
