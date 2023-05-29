@@ -1,0 +1,23 @@
+@use 'util/base.scss';
+@use 'util/mixins.scss';
+
+.jt-popup {
+    position: relative;
+    touch-action: manipulation;
+
+    @include mixins.jt-control;
+
+    &:focus-within > .jt-popup__popup {
+        opacity: 1;
+        pointer-events: auto;
+        transition-duration: var(--in-speed);
+        transform: translateY(0);
+    }
+}
+
+.jt-popup__popup {
+    opacity: 0;
+    pointer-events: none;
+
+    position: absolute;
+}

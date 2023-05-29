@@ -1,0 +1,94 @@
+jt-popup-menu {
+    --theme:             hsl(220 75% 50%);
+    --theme-hover:  hsl(220 75% 45%);
+    --theme-active:  hsl(220 75% 40%);
+    --theme-text:      hsl(220 75% 25%);
+    --theme-border: hsl(220 50% 75%);
+    --ontheme:         hsl(220 90% 98%);
+    --popupbg:         hsl(220 0% 100%);
+
+    --border: 1px solid var(--theme-border);
+    --radius: 6px;
+    --in-speed: 50ms;
+    --out-speed: 300ms;
+
+    @media (--dark) {
+        --theme:             hsl(220 50% 60%);
+        --theme-hover:  hsl(220 50% 65%);
+        --theme-active:  hsl(220 75% 70%);
+        --theme-text:      hsl(220 10% 85%);
+        --theme-border: hsl(220 20% 70%);
+        --ontheme:         hsl(220 90% 5%);
+        --popupbg:         hsl(220 10% 30%);
+    }
+}
+
+jt-popup-menu {
+    display: inline-block;
+
+    span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        padding: 0.25em;
+
+        svg {
+            stroke: #555;
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+    }
+
+    &:focus-within {
+        span {
+            color: #000;
+
+            svg {
+                stroke: #000;
+            }
+        }
+    }
+
+    ul, li {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .jt-popup__popup {
+        --shadow: 220 70% 15%;
+        --shadow-strength: 1%;
+
+        min-width: 8rem;
+
+        list-style-type: none;
+        background: var(--popupbg);
+        color: var(--theme-text);
+        padding-inline: 0;
+        padding-block: .5ch;
+        border-radius: var(--radius);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        font-size: .9em;
+        transition: opacity var(--out-speed) ease;
+
+        box-shadow:
+            0 -2px 5px 0 hsl(var(--shadow) / calc(var(--shadow-strength) + 5%)),
+            0 1px 1px -2px hsl(var(--shadow) / calc(var(--shadow-strength) + 10%)),
+            0 2px 2px -2px hsl(var(--shadow) / calc(var(--shadow-strength) + 12%)),
+            0 5px 5px -2px hsl(var(--shadow) / calc(var(--shadow-strength) + 13%)),
+            0 9px 9px -2px hsl(var(--shadow) / calc(var(--shadow-strength) + 14%)),
+            0 16px 16px -2px hsl(var(--shadow) / calc(var(--shadow-strength) + 20%))
+        ;
+    }
+
+    button {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+    }
+}

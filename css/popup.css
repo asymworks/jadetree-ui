@@ -1,0 +1,7 @@
+/* Base CSS Styles for Jade Tree Components */ /* Synthetic Control with Control Buttons */
+/* Arrow Button that points down or up if aria-expanded is true */
+/* Back (Left-Arrow) Button */
+/* Clear Button */
+.jt-popup {
+  touch-action: manipulation;
+}
