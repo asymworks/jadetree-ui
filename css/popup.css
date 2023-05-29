@@ -3,5 +3,72 @@
 /* Back (Left-Arrow) Button */
 /* Clear Button */
 .jt-popup {
+  position: relative;
   touch-action: manipulation;
+  --_jt-control-arrow-size: var(--jt-control-arrow-size, 1.2em);
+  --_jt-control-border-color: var(--jt-control-border-color, #999);
+  --_jt-control-border-radius: var(--jt-control-border-radius, 3px);
+  --_jt-control-border-hover-color: var(--jt-control-border-hover-color, #555);
+  --_jt-control-border-focus-color: var(--jt-control-border-focus-color, var(--jt-accent-color, #08e));
+  --_jt-control-background: var(--jt-control-background, #fff);
+  --_jt-control-color: var(--jt-control-color, #000);
+  --_jt-control-disabled-background: var(--jt-control-disabled-background, var(--_jt-control-background));
+  --_jt-control-disabled-color: var(--jt-control-disabled-color, #aaa);
+  --_jt-control-hover-background: var(--jt-control-selection-background, var(--jt-accent-color, #08e));
+  --_jt-control-hover-color: var(--jt-control-selection-color, var(--_jt-control-background));
+  --_jt-control-selection-background: var(--jt-control-selection-background, var(--jt-accent-color, #08e));
+  --_jt-control-selection-color: var(--jt-control-selection-color, var(--_jt-control-background));
+  --_jt-focus-color: var(--jt-focus-color, #eee);
+  --_jt-focus-background: var(--jt-focus-background, #08f);
+  --_jt-focus-ring-color: var(--jt-focus-ring-color, #888);
+  --_jt-focus-ring-style: var(--jt-focus-ring-style, dotted);
+  --_jt-focus-ring-width: var(--jt-focus-ring-style, 1px);
+  --_jt-focus-ring-offset: var(--jt-focus-ring-offset, -2px);
+}
+.jt-popup .jt-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--_jt-control-border-color);
+  border-radius: var(--_jt-control-border-radius);
+}
+.jt-popup .jt-control input, :where(.jt-popup .jt-control [data-role=control]) {
+  flex: 1 0 auto;
+  border: none;
+  outline: none;
+  font-size: inherit;
+  background-color: transparent;
+  border-start-start-radius: var(--_jt-control-border-radius);
+  border-end-start-radius: var(--_jt-control-border-radius);
+}
+.jt-popup .jt-control__buttons {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.2em;
+  -webkit-padding-end: 0.2em;
+          padding-inline-end: 0.2em;
+}
+:where(.jt-popup .jt-control:hover) {
+  border: 1px solid var(--_jt-control-border-hover-color);
+}
+:where(.jt-popup .jt-control.jt-focus, .jt-popup .jt-control.jt-focus:hover) {
+  border-color: var(--_jt-control-border-color);
+  outline: 2px solid var(--_jt-control-border-focus-color);
+}
+.jt-popup:focus-within > .jt-popup__popup {
+  opacity: 1;
+  pointer-events: auto;
+  transition-duration: var(--in-speed);
+  transform: translateY(0);
+}
+
+.jt-popup__popup {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
 }
