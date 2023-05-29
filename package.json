@@ -1,6 +1,6 @@
 {
   "name": "@jadetree/ui",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "description": "Jade Tree UI Components",
   "module": "./lib/index.js",
   "types": "./types/index.d.ts",
