@@ -1,4 +1,4 @@
-/*! JtControls v0.1.21 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.2.0 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 var JtControls = (function () {
 	'use strict';
 

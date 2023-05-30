@@ -6,6 +6,12 @@
 // Injected by Rollup
 declare global { const __ROLLUP_IIFE: boolean; }
 
-export * from './components/autocomplete';
-export * from './components/popupMenu';
-export * from './components/select';
+import JtAutocomplete from './components/autocomplete';
+import JtPopupMenu from './components/popupMenu';
+import JtSelect from './components/select';
+
+export {
+    JtAutocomplete,
+    JtPopupMenu,
+    JtSelect,
+}

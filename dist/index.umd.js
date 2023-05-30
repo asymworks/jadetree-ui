@@ -1,8 +1,9 @@
-/*! JtControls v0.1.21 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
-(function (factory) {
-	typeof define === 'function' && define.amd ? define(factory) :
-	factory();
-})((function () { 'use strict';
+/*! JtControls v0.2.0 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.JtControls = {}));
+})(this, (function (exports) { 'use strict';
 
 	const __ROLLUP_IIFE = true;
 
@@ -3089,7 +3090,6 @@
 	            : null;
 	        this._placement = `${placement}${alignment !== 'center' ? '-' + alignment : ''}`;
 	        this._selector = this.getAttribute('selector') || 'button';
-	        console.log('Positioning to ', this._placement);
 	        if (!this._trigger || !this._target)
 	            return;
 	        autoUpdate(this._trigger, this._target, () => {
@@ -3814,5 +3814,9 @@
 	if (typeof __ROLLUP_IIFE === 'boolean' && __ROLLUP_IIFE) {
 	    JtSelect.register();
 	}
+
+	exports.JtAutocomplete = JtAutocomplete;
+	exports.JtPopupMenu = JtPopupMenu;
+	exports.JtSelect = JtSelect;
 
 }));

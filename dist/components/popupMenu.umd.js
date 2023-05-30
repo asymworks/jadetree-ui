@@ -1,4 +1,4 @@
-/*! JtControls v0.1.21 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.2.0 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
@@ -1295,7 +1295,6 @@
               : null;
           this._placement = `${placement}${alignment !== 'center' ? '-' + alignment : ''}`;
           this._selector = this.getAttribute('selector') || 'button';
-          console.log('Positioning to ', this._placement);
           if (!this._trigger || !this._target)
               return;
           autoUpdate(this._trigger, this._target, () => {
