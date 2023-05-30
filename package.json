@@ -2,9 +2,13 @@
   "name": "@jadetree/ui",
   "version": "0.2.1",
   "description": "Jade Tree UI Components",
+  "type": "module",
   "main": "dist/index.umd.js",
-  "module": "dist/index.js",
-  "exports": "./dist/index.js",
+  "module": "dist/esm/index.js",
+  "exports": {
+    "require": "./dist/index.umd.js",
+    "import": "./dist/esm/index.js"
+  },
   "types": "types/index.d.ts",
   "scripts": {
     "build-css-scss": "postcss src/scss/index.scss src/scss/*.scss --base src/scss --dir css --ext css",
