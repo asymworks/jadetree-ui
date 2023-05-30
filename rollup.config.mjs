@@ -13,7 +13,7 @@ const configs = {
     'components/select.js',
     'index.js',
   ],
-  formats: ['es', 'iife'],
+  formats: ['es', 'umd', 'iife'],
   default: 'es',
   pathIn: 'lib',
   pathOut: 'dist',
@@ -50,7 +50,7 @@ const generateOutputConfig = function(file, minify) {
     if (minify) {
       output.plugins = [ terser(configs.terserConfig || {}) ];
     }
-    if (format === 'iife') {
+    if (format === 'iife' || format === 'umd') {
       output.name = configs.name;
       output.intro = `const ${configs.iifeFlag} = true;`;
     }

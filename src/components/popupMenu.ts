@@ -47,7 +47,6 @@ export default class JtPopupMenu extends HTMLElement {
         this._placement = `${placement}${alignment !== 'center' ? '-' + alignment : ''}`;
         this._selector = this.getAttribute('selector') || 'button';
 
-        console.log('Positioning to ', this._placement);
         if (!this._trigger || !this._target) return;
 
         autoUpdate(this._trigger, this._target, () => {
