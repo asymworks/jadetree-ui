@@ -1,4 +1,4 @@
-/*! JtControls v0.2.2 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.2.3 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 import qinu from 'qinu';
 
 /** Unique Id Generator */

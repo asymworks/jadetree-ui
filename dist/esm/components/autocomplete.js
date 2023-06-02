@@ -1,4 +1,4 @@
-/*! JtControls v0.2.2 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.2.3 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 import JtListBox from './listbox.js';
 import { boolAttribute, htmlToElement } from '../util/dom.js';
 import { interpolate } from '../util/html.js';
