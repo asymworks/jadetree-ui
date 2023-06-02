@@ -10,6 +10,7 @@
     "import": "./dist/esm/index.js"
   },
   "types": "types/index.d.ts",
+  "sideEffects": false,
   "scripts": {
     "build-css-scss": "postcss src/scss/index.scss src/scss/*.scss --base src/scss --dir css --ext css",
     "build-css-min": "postcss src/scss/index.scss src/scss/*.scss --base src/scss --dir css --ext min.css --env production",

@@ -1,4 +1,4 @@
-/*! JtControls v0.2.1 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
+/*! JtControls v0.2.2 | (c) 2023 Jonathan Krauss | BSD-3-Clause License | git+https://github.com/asymworks/jadetree-ui.git */
 var JtControls = (function () {
   'use strict';
 
@@ -1265,6 +1265,7 @@ var JtControls = (function () {
       length: 6,
       template: "%arg[0]%-%qinu%"
   });
+  var uid$1 = uid;
 
   /**
    * Jade Tree Popup Menu Component
@@ -1357,7 +1358,7 @@ var JtControls = (function () {
       /* -- Constructor -- */
       constructor() {
           super();
-          this._id = this.getAttribute('id') || uid('jt-popup-menu');
+          this._id = this.getAttribute('id') || uid$1('jt-popup-menu');
       }
       /* -- Web Component Lifecycle Hooks --*/
       static get observedAttributes() {
